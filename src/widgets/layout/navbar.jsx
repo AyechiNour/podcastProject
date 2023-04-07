@@ -83,19 +83,6 @@ export function Navbar({ brandName, routes, action }) {
   );
 }
 
-Navbar.defaultProps = {
-  brandName: "Podcast",
-  action: (
-    <a
-      href="https://www.creative-tim.com/product/material-tailwind-dashboard-react"
-      target="_blank"
-    >
-      <Button variant="gradient" size="sm" fullWidth>
-        free download
-      </Button>
-    </a>
-  ),
-};
 
 Navbar.propTypes = {
   brandName: PropTypes.string,

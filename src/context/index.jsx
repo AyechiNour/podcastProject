@@ -58,7 +58,7 @@ export function useMaterialTailwindController() {
 
   if (!context) {
     throw new Error(
-      "useMaterialTailwindController should be used inside the MaterialTailwindControllerProvider."
+      "Error."
     );
   }
 
