@@ -42,15 +42,9 @@ export function Profile() {
                 <Typography variant="h5" color="blue-gray" className="mb-1">
                   Richard Davis
                 </Typography>
-                <Typography
-                  variant="small"
-                  className="font-normal text-blue-gray-600"
-                >
-                  CEO / Co-Founder
-                </Typography>
               </div>
             </div>
-            <div className="w-96">
+            {/* <div className="w-96">
               <Tabs value="app">
                 <TabsHeader>
                   <Tab value="app">
@@ -67,10 +61,10 @@ export function Profile() {
                   </Tab>
                 </TabsHeader>
               </Tabs>
-            </div>
+            </div> */}
           </div>
-          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div>
+          <div className="mb-12 px-4">
+            {/* <div>
               <Typography variant="h6" color="blue-gray" className="mb-3">
                 Platform Settings
               </Typography>
@@ -96,8 +90,8 @@ export function Profile() {
                   </div>
                 ))}
               </div>
-            </div>
-            <ProfileInfoCard
+            </div> */}
+            {/* <ProfileInfoCard
               title="Profile Information"
               description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
@@ -118,39 +112,32 @@ export function Profile() {
                   <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
                 </Tooltip>
               }
-            />
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <ul className="flex flex-col gap-6">
-                {conversationsData.map((props) => (
-                  <MessageCard
-                    key={props.name}
-                    {...props}
-                    action={
-                      <Button variant="text" size="sm">
-                        reply
-                      </Button>
-                    }
-                  />
-                ))}
-              </ul>
-            </div>
+            /> */}
+            <Typography variant="h6" color="blue-gray" className="mb-3">
+              Articles
+            </Typography>
+            <ul className="flex flex-col gap-6">
+              {conversationsData.map((props) => (
+                <MessageCard
+                  key={props.name}
+                  {...props}
+                  action={
+                    <Button variant="text" size="sm">
+                      convert
+                    </Button>
+                  }
+                />
+              ))}
+            </ul>
+
           </div>
           <div className="px-4 pb-4">
             <Typography variant="h6" color="blue-gray" className="mb-2">
-              Projects
-            </Typography>
-            <Typography
-              variant="small"
-              className="font-normal text-blue-gray-500"
-            >
-              Architects design houses
+              Audios
             </Typography>
             <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
               {projectsData.map(
-                ({ img, title, description, tag, route, members }) => (
+                ({ img, title, route, members }) => (
                   <Card key={title} color="transparent" shadow={false}>
                     <CardHeader
                       floated={false}
@@ -165,45 +152,21 @@ export function Profile() {
                     </CardHeader>
                     <CardBody className="py-0 px-1">
                       <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {tag}
-                      </Typography>
-                      <Typography
                         variant="h5"
                         color="blue-gray"
                         className="mt-1 mb-2"
                       >
                         {title}
                       </Typography>
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {description}
-                      </Typography>
                     </CardBody>
                     <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                      <Link to={route}>
-                        <Button variant="outlined" size="sm">
-                          view project
-                        </Button>
-                      </Link>
                       <div>
-                        {members.map(({ img, name }, key) => (
-                          <Tooltip key={name} content={name}>
-                            <Avatar
-                              src={img}
-                              alt={name}
-                              size="xs"
-                              variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
-                                key === 0 ? "" : "-ml-2.5"
-                              }`}
-                            />
-                          </Tooltip>
-                        ))}
+                        <Button variant="outlined" size="sm">
+                          Start
+                        </Button>
+                        <Button variant="outlined" size="sm">
+                          Stop
+                        </Button>
                       </div>
                     </CardFooter>
                   </Card>
