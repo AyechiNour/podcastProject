@@ -8,7 +8,10 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
-
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
+const icon = {
+  className: "w-5 h-5 text-inherit",
+};
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
@@ -17,17 +20,16 @@ export function Sidenav({ brandImg, brandName, routes }) {
     white: "bg-white shadow-lg",
     transparent: "bg-transparent",
   };
+  console.log(routes)
 
   return (
     <aside
-      className={`${sidenavTypes[sidenavType]} ${
-        openSidenav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
+      className={`${sidenavTypes[sidenavType]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
+        } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0`}
     >
       <div
-        className={`relative border-b ${
-          sidenavType === "dark" ? "border-white/20" : "border-blue-gray-50"
-        }`}
+        className={`relative border-b ${sidenavType === "dark" ? "border-white/20" : "border-blue-gray-50"
+          }`}
       >
         <Link to="/" className="flex items-center gap-4 py-6 px-8">
           <Avatar src={brandImg} size="sm" />
@@ -52,8 +54,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
       <div className="m-4">
         {routes.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
-            {title && (
+            {/* {title !== null && (
+             
               <li className="mx-3.5 mt-4 mb-2">
+                 
                 <Typography
                   variant="small"
                   color={sidenavType === "dark" ? "white" : "blue-gray"}
@@ -62,8 +66,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   {title}
                 </Typography>
               </li>
-            )}
-            {pages.map(({ icon, name, path }) => (
+            )} */}
+            {layout == "dashboard" && pages.map(({ icon, name, path }) => (
               <li key={name}>
                 <NavLink to={`/${layout}${path}`}>
                   {({ isActive }) => (
@@ -73,8 +77,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         isActive
                           ? sidenavColor
                           : sidenavType === "dark"
-                          ? "white"
-                          : "blue-gray"
+                            ? "white"
+                            : "blue-gray"
                       }
                       className="flex items-center gap-4 px-4 capitalize"
                       fullWidth
@@ -93,6 +97,29 @@ export function Sidenav({ brandImg, brandName, routes }) {
             ))}
           </ul>
         ))}
+      
+            <Button
+              variant={false ? "gradient" : "text"}
+              color={
+                false
+                  ? sidenavColor
+                  : sidenavType === "dark"
+                    ? "white"
+                    : "blue-gray"
+              }
+              className="flex items-center gap-4 px-4 capitalize"
+              fullWidth
+            >
+              <ArrowRightOnRectangleIcon  {...icon} />
+              <Typography
+                color="inherit"
+                className="font-medium capitalize"
+              >
+                Sign Out
+              </Typography>
+            </Button>
+        
+       
       </div>
     </aside>
   );
