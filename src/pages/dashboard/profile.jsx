@@ -33,14 +33,14 @@ export function Profile() {
           <div className="mb-10 flex items-center justify-between gap-6">
             <div className="flex items-center gap-6">
               <Avatar
-                src="/img/bruce-mars.jpeg"
+                src="/img/team-3.jpeg"
                 alt="bruce-mars"
                 size="xl"
                 className="rounded-lg shadow-lg shadow-blue-gray-500/40"
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Richard Davis
+                  Ayechi Nour
                 </Typography>
               </div>
             </div>
@@ -161,12 +161,13 @@ export function Profile() {
                     </CardBody>
                     <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
                       <div>
-                        <Button variant="outlined" size="sm">
+                        <img src="/img/nivAudio1.jpg" alt="" srcset="" />
+                        {/* <Button variant="outlined" size="sm">
                           Start
                         </Button>
                         <Button variant="outlined" size="sm">
                           Stop
-                        </Button>
+                        </Button> */}
                       </div>
                     </CardFooter>
                   </Card>

@@ -35,12 +35,12 @@ export const routes = [
         path: "/tables",
         element: <Tables />,
       },
-      {
-        icon: <BellIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
-      },
+      // {
+      //   icon: <BellIcon {...icon} />,
+      //   name: "notifications",
+      //   path: "/notifications",
+      //   element: <Notifications />,
+      // },
     ],
   },
   {
@@ -53,12 +53,13 @@ export const routes = [
         path: "/sign-in",
         element: <SignIn />,
       },
-      // {
-      //   icon: <UserPlusIcon {...icon} />,
-      //   name: "sign up",
-      //   path: "/sign-up",
-      //   element: <SignUp />,
-      // },
+      {
+        icon: <UserPlusIcon {...icon} />,
+        name: "sign up",
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+    
     ],
   },
 ];

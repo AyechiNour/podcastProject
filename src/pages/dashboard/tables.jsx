@@ -13,6 +13,7 @@ import {
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 import { Link } from "react-router-dom";
+import { MessageCard } from "@/widgets/cards";
 
 export function Tables() {
   return (
@@ -31,7 +32,7 @@ export function Tables() {
             let me know what subject you would like me to assist you with.
           </Typography>
           <div className="mr-auto my-6 flex flex-row justify-center items-center">
-            <Input label="Type here"/>
+            <Input label="Type here" />
             <Link className="ml-2" >
               <Button variant="outlined" size="sm">
                 Search
@@ -39,11 +40,16 @@ export function Tables() {
             </Link>
           </div>
           <div className="w-full border h-52 rounded-md overflow-y-scroll"></div>
-          <Link className="mt-2 flex justify-end">
+          <div className="flex flex-row justify-end items-center">
+            <Link className="mr-1 mt-3">
+              <div className="icons8-refresh mr-4"></div>
+            </Link>
+            <Link className="mt-2">
               <Button variant="outlined" size="sm">
                 Validate
               </Button>
             </Link>
+          </div>
         </CardBody>
       </Card>
       <Card>
@@ -56,7 +62,7 @@ export function Tables() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["author", "function", "status", "employed", ""].map((el) => (
+                {["subject", "content", "status", "date", ""].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -83,7 +89,6 @@ export function Tables() {
                     <tr key={name}>
                       <td className={className}>
                         <div className="flex items-center gap-4">
-                          <Avatar src={img} alt={name} size="sm" />
                           <div>
                             <Typography
                               variant="small"
@@ -92,16 +97,10 @@ export function Tables() {
                             >
                               {name}
                             </Typography>
-                            <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
-                            </Typography>
                           </div>
                         </div>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {job[0]}
-                        </Typography>
                         <Typography className="text-xs font-normal text-blue-gray-500">
                           {job[1]}
                         </Typography>
@@ -110,7 +109,7 @@ export function Tables() {
                         <Chip
                           variant="gradient"
                           color={online ? "green" : "blue-gray"}
-                          value={online ? "online" : "offline"}
+                          value={online ? "converted" : "non-converted"}
                           className="py-0.5 px-2 text-[11px] font-medium"
                         />
                       </td>
@@ -120,13 +119,9 @@ export function Tables() {
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography
-                          as="a"
-                          href="#"
-                          className="text-xs font-semibold text-blue-gray-600"
-                        >
-                          Edit
-                        </Typography>
+                        <Button variant="text" size="sm">
+                          delete
+                        </Button>
                       </td>
                     </tr>
                   );

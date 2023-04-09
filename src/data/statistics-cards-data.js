@@ -9,8 +9,8 @@ export const statisticsCardsData = [
   {
     color: "blue",
     icon: BanknotesIcon,
-    title: "Nour chayta",
-    value: "$53k",
+    title: "Today's Article",
+    value: "+10k",
     footer: {
       color: "text-green-500",
       value: "+55%",
@@ -28,22 +28,22 @@ export const statisticsCardsData = [
       label: "than last month",
     },
   },
-  {
-    color: "green",
-    icon: UserPlusIcon,
-    title: "New Clients",
-    value: "3,462",
-    footer: {
-      color: "text-red-500",
-      value: "-2%",
-      label: "than yesterday",
-    },
-  },
+  // {
+  //   color: "green",
+  //   icon: UserPlusIcon,
+  //   title: "New Clients",
+  //   value: "3,462",
+  //   footer: {
+  //     color: "text-red-500",
+  //     value: "-2%",
+  //     label: "than yesterday",
+  //   },
+  // },
   {
     color: "orange",
     icon: ChartBarIcon,
-    title: "Sales",
-    value: "$103,430",
+    title: "Today's Audio",
+    value: "+7k",
     footer: {
       color: "text-green-500",
       value: "+5%",

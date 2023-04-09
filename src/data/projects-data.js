@@ -1,7 +1,7 @@
 export const projectsData = [
   {
-    img: "/img/home-decor-1.jpeg",
-    title: "Modern",
+    img: "/img/audio1.png",
+    title: "Art & Design",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
@@ -11,8 +11,8 @@ export const projectsData = [
     ],
   },
   {
-    img: "/img/home-decor-2.jpeg",
-    title: "Scandinavian",
+    img: "/img/audio1.png",
+    title: "Business",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
@@ -22,8 +22,8 @@ export const projectsData = [
     ],
   },
   {
-    img: "/img/home-decor-3.jpeg",
-    title: "Minimalist",
+    img: "/img/audio1.png",
+    title: "Economics",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
@@ -33,8 +33,8 @@ export const projectsData = [
     ],
   },
   {
-    img: "/img/home-decor-4.jpeg",
-    title: "Gothic",
+    img: "/img/audio1.png",
+    title: "Architecture",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
