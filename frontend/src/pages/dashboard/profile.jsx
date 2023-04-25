@@ -21,8 +21,28 @@ import {
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Profile() {
+  const [validate, setvalidate] = useState(false)
+  const [Article, setArticle] = useState(null);
+
+  useEffect(() => {
+    console.log("okkkk")
+    async function fetchData() {
+      try {
+        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { id: "1" })
+        console.log("from profile", allArticles.data.articles)
+        setArticle(allArticles.data.articles)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData()
+    console.log(Article)
+  }, [validate]);
+
   return (
     <>
       <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover	bg-center bg-img" >
@@ -117,17 +137,19 @@ export function Profile() {
               Articles
             </Typography>
             <ul className="flex flex-col gap-6">
-              {conversationsData.map((props) => (
-                <MessageCard
-                  key={props.name}
-                  {...props}
-                  action={
-                    <Button variant="text" size="sm">
-                      convert
-                    </Button>
-                  }
-                />
-              ))}
+              {Article != null &&
+                Article.map(({id, subject, content}) => (
+                  <MessageCard
+                    key={id}
+                    name={subject}
+                    message={content}
+                    action={
+                      <Button variant="text" size="sm">
+                        convert
+                      </Button>
+                    }
+                  />
+                ))}
             </ul>
 
           </div>

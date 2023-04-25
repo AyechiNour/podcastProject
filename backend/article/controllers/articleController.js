@@ -100,11 +100,50 @@ exports.getArticle = async (data) => {
     }
 }
 
+exports.getArticleNonConverted = async (data) => {
+    try {
+        let errors = [];
+        const idUser = data.id;
+
+        //Validate all the data coming through.
+
+        if (_.isEmpty(idUser)) errors = [...errors, "Please fill in your id"];
+
+        if (!_.isEmpty(errors)) {
+            //If the errors array contains any then escape the function.
+            return {
+                status: false,
+                errors: errors,
+            };
+        }
+
+        //get articles
+        const articles = await Models.Article.findAll({
+            where: {
+                idUser: idUser,
+                status: false
+            }
+        });
+
+        return {
+            status: true,
+            articles: articles
+        };
+
+    } catch (error) {
+        console.log(error);
+        return {
+            status: false,
+            errors: ["Something went wrong please try again later."],
+        };
+    }
+}
+
 exports.deleteArticle = async (data) => {
     try {
         let errors = [];
         const idArticle = data.id;
-
+        console.log(data)
         //delete article
         const articles = await Models.Article.destroy({
             where: {

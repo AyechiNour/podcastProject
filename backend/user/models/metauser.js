@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      metauser.belongsTo(models.user, { foreignKey: 'id', onDelete: 'CASCADE', hooks: true });
+      metauser.belongsTo(models.user, { foreignKey: 'idUser', onDelete: 'CASCADE', hooks: true });
     }
   }
   metauser.init({

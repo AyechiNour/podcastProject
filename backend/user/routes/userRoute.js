@@ -13,4 +13,24 @@ userRoute.post('/verifUser', async (req, res, next) => {
 }
 );
 
+userRoute.post('/signIn', async (req, res, next) => {
+    try {
+        const result = await userController.signIn(req.body)
+        res.status(200).json(result)
+	} catch (error) {
+        res.status(400).json(error);
+    }
+}
+);
+
+userRoute.post('/signUp', async (req, res, next) => {
+    try {
+        const result = await userController.signUp(req.body)
+        res.status(200).json(result)
+	} catch (error) {
+        res.status(400).json(error);
+    }
+}
+);
+
 module.exports = userRoute

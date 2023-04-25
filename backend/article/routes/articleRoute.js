@@ -23,9 +23,20 @@ articleRoute.post('/getArticle', async (req, res, next) => {
 }
 );
 
-articleRoute.delete('/deleteArticle', async (req, res, next) => {
+articleRoute.post('/getArticleNonConverted', async (req, res, next) => {
+    try {
+        const result = await articleController.getArticleNonConverted(req.body)
+        res.status(200).json(result)
+	} catch (error) {
+        res.status(400).json(error);
+    }
+}
+);
+
+articleRoute.post('/deleteArticle', async (req, res, next) => {
     try {
         const result = await articleController.deleteArticle(req.body)
+        console.log("req",req.body)
         res.status(200).json(result)
 	} catch (error) {
         res.status(400).json(error);

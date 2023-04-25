@@ -27,18 +27,18 @@ export function Tables() {
 
   useEffect(() => {
     console.log("okkkk")
-    async function fetchData (){
-    try {
-      const allArticles = await axios.post('http://localhost:3000/article/getArticle', { id: "1" })
-      console.log(allArticles.data.articles)
-      setArticle(allArticles.data.articles)
-    } catch (error) {
-      console.log(error);
+    async function fetchData() {
+      try {
+        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { id: "1" })
+        console.log(allArticles.data.articles)
+        setArticle(allArticles.data.articles)
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
-  fetchData()
-  console.log(Article)
-  },[validate]);
+    fetchData()
+    console.log(Article)
+  }, [validate]);
 
   const generateArticle = async () => {
     try {
@@ -57,13 +57,25 @@ export function Tables() {
       let subject = refSubject.current.getElementsByTagName('input')[0].value
       console.log(subject)
       console.log(value)
-     const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, idUser :"1" })
-     console.log(result)
-     setvalidate(!validate)
-     refSubject.current.getElementsByTagName('input')[0].value=""
-      contentRef.current.innerHTML=""   
+      const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, idUser: "1" })
+      console.log(result)
+      setvalidate(!validate)
+      refSubject.current.getElementsByTagName('input')[0].value = ""
+      contentRef.current.innerHTML = ""
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  const deleteArticle = async (id) => {
+    try {
+      console.log("from delete")
+      console.log(id)
+      const deleteResult = await axios.post('http://localhost:3000/article/deleteArticle', { id: id })
+      console.log(deleteResult)
+      setvalidate(!validate)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -94,11 +106,11 @@ export function Tables() {
             <p ref={contentRef} className="p-3" ></p>
           </div>
           <div className="flex flex-row justify-end items-center">
-            <Link className="mr-1 mt-3" onClick={() => {contentRef.current.innerHTML=""; generateArticle() }}>
+            <Link className="mr-1 mt-3" onClick={() => { contentRef.current.innerHTML = ""; generateArticle() }}>
               <div className="icons8-refresh mr-4"></div>
             </Link>
             <Link className="mt-2">
-              <Button variant="outlined" size="sm" onClick={() => {contentRef.current.innerHTML=""; addArticle() }}>
+              <Button variant="outlined" size="sm" onClick={() => { contentRef.current.innerHTML = ""; addArticle() }}>
                 Validate
               </Button>
             </Link>
@@ -131,57 +143,57 @@ export function Tables() {
               </tr>
             </thead>
             {Article != null &&
-            <tbody>
-              {Article.map(
-                ({id, subject, content, status, createdAt }, key) => {
-                  const className = `py-3 px-5 ${key === Article.length - 1
-                    ? ""
-                    : "border-b border-blue-gray-50"
-                    }`;
+              <tbody>
+                {Article.map(
+                  ({ id, subject, content, status, createdAt }, key) => {
+                    const className = `py-3 px-5 ${key === Article.length - 1
+                      ? ""
+                      : "border-b border-blue-gray-50"
+                      }`;
 
-                  return (
-                    <tr key={subject}>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-semibold"
-                            >
-                              {subject}
-                            </Typography>
+                    return (
+                      <tr key={id}>
+                        <td className={className}>
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-semibold"
+                              >
+                                {subject}
+                              </Typography>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
-                          {content}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Chip
-                          variant="gradient"
-                          color={(status==0) ? "green" : "blue-gray"}
-                          value={(status==0) ? "converted" : "non-converted"}
-                          className="py-0.5 px-2 text-[11px] font-medium"
-                        />
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {createdAt}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Button variant="text" size="sm">
-                          delete
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>}
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-normal text-blue-gray-500 h-10 w-96 flex items-center truncate" >
+                            {content}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Chip
+                            variant="gradient"
+                            color={(status == 1) ? "green" : "blue-gray"}
+                            value={(status == 1) ? "converted" : "non-converted"}
+                            className="py-0.5 px-2 text-[11px] font-medium"
+                          />
+                        </td>
+                        <td className={className}>
+                          <Typography className="text-xs font-semibold text-blue-gray-600">
+                            {createdAt}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Button variant="text" size="sm" onClick={() => { deleteArticle(id) }}>
+                            delete
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+              </tbody>}
           </table>
         </CardBody>
       </Card>
