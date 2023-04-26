@@ -7,7 +7,7 @@ exports.getToken = async (data) => {
     try {
         let errors = [];
         const { id } = data;
-
+        console.log(id)
         //Validate all the data coming through.
         if (_.isEmpty(id)) errors = [...errors, "Please fill in your id"];
 
@@ -21,11 +21,11 @@ exports.getToken = async (data) => {
 
         //create new token
         let token = jwt.sign({idUser:id},privateKey,{expiresIn:'10h'})
-
+        console.log(token)
         if (!token) {
             return {
                 status: false,
-                errors: ["Something went wrong please try again later."],
+                errors: ["Something went wrong please try again later."]
             };
         }
 

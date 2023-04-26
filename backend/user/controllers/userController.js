@@ -78,19 +78,24 @@ exports.signIn = async (data) => {
                 }
             });
             if (coordCorrect) {
-                const Token = await axios.post('http://localhost:3000/authorisation/getToken', { id: coordCorrect.id })
+                console.log("cooooord",coordCorrect.dataValues.id)
+                const Token = await axios.post('http://localhost:3000/authorisation/getToken', { id: coordCorrect.dataValues })
                     .then((response) => {
                         if (response.data.status == false) errors = [...errors, "Problem with Token"];
                         else {
                             tokenUser = response.data.token,
-                                console.log("resultat", response.data)
+                            console.log("resultat", tokenUser)
                         }
                     })
                     .catch((error) => {
                         console.log(error)
                         errors = [...errors, "we can't connect to the other microservice"];
                     });
-
+                console.log(Token)
+                return {
+                    status: true,
+                    token: tokenUser
+                };
             } else {
                 return {
                     status: false,
@@ -104,10 +109,7 @@ exports.signIn = async (data) => {
                 errors: "Email or password are incorrect",
             };
         }
-        return {
-            status: true,
-            token: tokenUser
-        };
+
     } catch (error) {
         console.log(error)
     }
@@ -148,12 +150,12 @@ exports.signUp = async (data) => {
             const user = await Models.user.create({ email: email, password: password });
             console.log(user.dataValues.id)
             const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id })
-            const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues})
+            const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues })
                 .then((response) => {
                     if (response.data.status == false) errors = [...errors, "Problem with Token"];
                     else {
                         tokenUser = response.data.token,
-                        console.log("resultat", response.data)
+                            console.log("resultat", response.data)
                     }
                 })
                 .catch((error) => {

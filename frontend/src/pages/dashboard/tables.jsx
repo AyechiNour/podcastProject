@@ -14,7 +14,7 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 import { Link } from "react-router-dom";
 import { MessageCard } from "@/widgets/cards";
-import axios, { all } from 'axios';
+import axios from 'axios';
 import { useRef, useState } from "react";
 import { useEffect } from "react";
 

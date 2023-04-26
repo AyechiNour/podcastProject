@@ -9,8 +9,21 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { useRef } from "react";
+import axios from 'axios';
 
 export function SignIn() {
+
+  const email = useRef(null)
+  const password = useRef(null)
+
+  const signin = () => {
+    const emailValue = email.current.getElementsByTagName('input')[0].value
+    const passwordValue = password.current.getElementsByTagName('input')[0].value
+    const user = axios.post('http://localhost:3000/user/signIn', { email: emailValue, password:passwordValue })
+    console.log(user)
+  }
+
   return (
     <div>
       {/* <img
@@ -30,14 +43,14 @@ export function SignIn() {
             </Typography>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Input type="email" label="Email" size="lg" />
-            <Input type="password" label="Password" size="lg" />
+            <Input type="email" label="Email" size="lg" ref={email} />
+            <Input type="password" label="Password" size="lg" ref={password} />
             <div className="-ml-2.5">
               <Checkbox label="Remember Me" />
             </div>
           </CardBody>
           <CardFooter className="pt-0">
-            <Button variant="gradient" fullWidth>
+            <Button variant="gradient" fullWidth onClick={()=>{signin()}}>
               Sign In
             </Button>
             <Typography variant="small" className="mt-6 flex justify-center">
