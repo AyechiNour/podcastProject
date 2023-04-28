@@ -23,16 +23,20 @@ import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ReactAudioPlayer from 'react-audio-player';
 
 export function Profile() {
   const [validate, setvalidate] = useState(false)
   const [Article, setArticle] = useState(null);
 
+  const Token = localStorage.getItem('token')
+  console.log("Token", Token)
+
   useEffect(() => {
     console.log("okkkk")
     async function fetchData() {
       try {
-        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { id: "1" })
+        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
         console.log("from profile", allArticles.data.articles)
         setArticle(allArticles.data.articles)
       } catch (error) {
@@ -138,7 +142,7 @@ export function Profile() {
             </Typography>
             <ul className="flex flex-col gap-6">
               {Article != null &&
-                Article.map(({id, subject, content}) => (
+                Article.map(({ id, subject, content }) => (
                   <MessageCard
                     key={id}
                     name={subject}
@@ -157,6 +161,13 @@ export function Profile() {
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Audios
             </Typography>
+            
+            {/* <ReactAudioPlayer
+              src="my_audio_file.ogg"
+              autoPlay
+              controls
+            /> */}
+
             <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
               {projectsData.map(
                 ({ img, title, route, members }) => (

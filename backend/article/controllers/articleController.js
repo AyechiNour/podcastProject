@@ -11,24 +11,43 @@ const openai = new OpenAIApi(config)
 
 exports.addArticle = async (data) => {
     try {
+        console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
         let errors = [];
-        const { subject, content, idUser } = data;
+        const subject = data.subject
+        const content = data.content
+        const token = data.token
 
         //Validate all the data coming through.
 
         if (_.isEmpty(subject)) errors = [...errors, "Please fill in your subject"];
 
-        if (_.isEmpty(content))
-            errors = [...errors, "Please wait until we finish the content"];
+        if (_.isEmpty(content)) errors = [...errors, "Please wait until we finish the content"];
+
+        if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
+
+        //decodeToken
+        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        console.log(tokenDecoded)
+        if (!tokenDecoded) {
+            return {
+                status: false,
+                errors: ["Something went wrong please try again later."]
+            }
+        }
+        
+        const idUser= tokenDecoded.data.token.payload.idUser
+        console.log("idUser",idUser)
 
         //Verify if UserId exist
-        const id = await axios.post('http://localhost:3000/user/verifUser', { id: idUser })
-            .then((response) => {
-                if (response.data.status == false) errors = [...errors, "This id didn't exist"];
-            })
-            .catch((error) => {
-                errors = [...errors, "we can't connect to the other microservice"];
-            });
+        // const id = await axios.post('http://localhost:3000/user/verifUser', { id: idUser })
+        //     .then((response) => {
+        //         if (response.data.status == false) errors = [...errors, "This id didn't exist"];
+        //     })
+        //     .catch((error) => {
+        //         errors = [...errors, "we can't connect to the other microservice"];
+        //     });
+
+        // console.log("idExist",id)
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -38,8 +57,10 @@ exports.addArticle = async (data) => {
             };
         }
 
+        console.log("avant article")
         //create new article
         const article = await Models.Article.create({ subject: subject, content: content, status: false, idUser: idUser });
+        // console.log(article)
         console.log("article's auto-generated ID:", article.id);
         if (!article) {
             return {
@@ -50,7 +71,7 @@ exports.addArticle = async (data) => {
 
         return {
             status: true,
-            message: ["profil has been created successfully"]
+            message: ["article has been added successfully"]
         };
 
     } catch (error) {
@@ -65,11 +86,12 @@ exports.addArticle = async (data) => {
 exports.getArticle = async (data) => {
     try {
         let errors = [];
-        const idUser = data.id;
+        const token = data.token
+        console.log(token)
 
         //Validate all the data coming through.
 
-        if (_.isEmpty(idUser)) errors = [...errors, "Please fill in your id"];
+        if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -79,10 +101,22 @@ exports.getArticle = async (data) => {
             };
         }
 
+        //decodeToken
+        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        console.log("----------------------------",tokenDecoded)
+        if (!tokenDecoded) {
+            return {
+                status: false,
+                errors: ["Something went wrong please try again later."]
+            }
+        }
+        
+        console.log("data",tokenDecoded.data.token.payload.idUser)
+
         //get articles
         const articles = await Models.Article.findAll({
             where: {
-                idUser: idUser
+                idUser: tokenDecoded.data.token.payload.idUser
             }
         });
 
@@ -95,7 +129,7 @@ exports.getArticle = async (data) => {
         console.log(error);
         return {
             status: false,
-            errors: ["Something went wrong please try again later."],
+            errors: ["Something went wrong please try again later."]
         };
     }
 }
@@ -103,11 +137,12 @@ exports.getArticle = async (data) => {
 exports.getArticleNonConverted = async (data) => {
     try {
         let errors = [];
-        const idUser = data.id;
+        const tokenNonConverted = data.token
+        console.log(tokenNonConverted)
 
         //Validate all the data coming through.
 
-        if (_.isEmpty(idUser)) errors = [...errors, "Please fill in your id"];
+        if (_.isEmpty(tokenNonConverted)) errors = [...errors, "Please fill in your token"];
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -117,10 +152,21 @@ exports.getArticleNonConverted = async (data) => {
             };
         }
 
+        //decodeToken
+        const tokenDecodedNonConverted = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        if (!tokenDecodedNonConverted) {
+            return {
+                status: false,
+                errors: ["Something went wrong please try again later."]
+            }
+        }
+        
+        console.log("data",tokenDecodedNonConverted.data.token.payload.idUser)
+
         //get articles
         const articles = await Models.Article.findAll({
             where: {
-                idUser: idUser,
+                idUser: tokenDecoded.data.token.payload.idUser,
                 status: false
             }
         });

@@ -5,11 +5,15 @@ const jwt = require("jsonwebtoken");
 privateKey="AyechiNour"
 exports.getToken = async (data) => {
     try {
+       
         let errors = [];
-        const { id } = data;
-        console.log(id)
+        const { id,name } = data;
+        console.log("id:",id)
+        console.log("name",name)
+
         //Validate all the data coming through.
-        if (_.isEmpty(id)) errors = [...errors, "Please fill in your id"];
+        if (_.isNaN(id)) errors = [...errors, "Please fill in your id"];
+        if (_.isEmpty(name)) errors = [...errors, "Please fill in your name"];
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -20,7 +24,7 @@ exports.getToken = async (data) => {
         }
 
         //create new token
-        let token = jwt.sign({idUser:id},privateKey,{expiresIn:'10h'})
+        let token = jwt.sign({idUser:id, nameUser:name},privateKey,{expiresIn:'10h'})
         console.log(token)
         if (!token) {
             return {
@@ -62,6 +66,38 @@ exports.verifToken = async (data) => {
         jwt.verify(tokenUser,privateKey)
         return {
             status: true 
+        };
+
+    } catch (error) {
+        console.log(error);
+        return {
+            status: false,
+            errors: ["Something went wrong please try again later."],
+        };
+    }
+}
+
+exports.decodeToken = async (data) => {
+    try {
+        let errors = [];
+        const { tokenUser } = data;
+        //Validate all the data coming through.
+        if (_.isEmpty(tokenUser)) errors = [...errors, "empty!!"];
+
+        if (!_.isEmpty(errors)) {
+            //If the errors array contains any then escape the function.
+            return {
+                status: false,
+                errors: errors
+            };
+        }
+
+        //decode token
+        const tokenDecoded = jwt.decode(tokenUser,{complete:true})
+        console.log(tokenDecoded)
+
+        return {
+            token : tokenDecoded 
         };
 
     } catch (error) {

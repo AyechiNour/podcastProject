@@ -23,4 +23,14 @@ tokenRoute.get('/verifToken', async (req, res, next) => {
 }
 );
 
+tokenRoute.post('/decodeToken', async (req, res, next) => {
+    try {
+        const result = await tokenController.decodeToken(req.body)
+        res.status(200).json(result)
+	} catch (error) {
+        res.status(400).json(error);
+    }
+}
+);
+
 module.exports = tokenRoute

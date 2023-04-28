@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -17,13 +17,20 @@ export function SignUp() {
   const name = useRef(null)
   const email = useRef(null)
   const password = useRef(null)
-
+  const navigate = useNavigate();
+  
   const signup = () => {
     let userName = name.current.getElementsByTagName('input')[0].value
     let userEmail = email.current.getElementsByTagName('input')[0].value
     let userPassword = password.current.getElementsByTagName('input')[0].value
     const user = axios.post('http://localhost:3000/user/signIn', {name: userName ,email: userEmail, password: userPassword })
     console.log(user)
+    user.then((result)=>{
+      localStorage.setItem('token',result.data.token)
+      navigate('/dashboard/profile');
+    }).catch((error)=>{
+      console.log(error)
+    })
   }
 
   return (

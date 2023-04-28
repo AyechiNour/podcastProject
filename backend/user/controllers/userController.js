@@ -78,8 +78,12 @@ exports.signIn = async (data) => {
                 }
             });
             if (coordCorrect) {
-                console.log("cooooord",coordCorrect.dataValues.id)
-                const Token = await axios.post('http://localhost:3000/authorisation/getToken', { id: coordCorrect.dataValues })
+                console.log("nour",coordCorrect.dataValues.id)
+                const userMeta = await Models.metauser.findOne({
+                   idUser: coordCorrect.dataValues.id
+                })
+                console.log("cooooord",userMeta)
+                const Token = await axios.post('http://localhost:3000/authorisation/getToken', { id: coordCorrect.dataValues.id, name: userMeta.dataValues.metavalue })
                     .then((response) => {
                         if (response.data.status == false) errors = [...errors, "Problem with Token"];
                         else {
@@ -150,12 +154,12 @@ exports.signUp = async (data) => {
             const user = await Models.user.create({ email: email, password: password });
             console.log(user.dataValues.id)
             const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id })
-            const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues })
+            const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues.id , name: name})
                 .then((response) => {
                     if (response.data.status == false) errors = [...errors, "Problem with Token"];
                     else {
                         tokenUser = response.data.token,
-                            console.log("resultat", response.data)
+                        console.log("resultat --------------------------------", response.data)
                     }
                 })
                 .catch((error) => {

@@ -25,11 +25,14 @@ export function Tables() {
   const [value, setvalue] = useState("");
   const [Article, setArticle] = useState(null);
 
+  const Token = localStorage.getItem('token')
+  console.log("Token",Token)
+
   useEffect(() => {
     console.log("okkkk")
     async function fetchData() {
       try {
-        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { id: "1" })
+        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
         console.log(allArticles.data.articles)
         setArticle(allArticles.data.articles)
       } catch (error) {
@@ -55,9 +58,10 @@ export function Tables() {
   const addArticle = async () => {
     try {
       let subject = refSubject.current.getElementsByTagName('input')[0].value
-      console.log(subject)
-      console.log(value)
-      const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, idUser: "1" })
+      console.log("subject",subject)
+      console.log("value",value)
+      console.log("token",Token)
+      const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, token: Token })
       console.log(result)
       setvalidate(!validate)
       refSubject.current.getElementsByTagName('input')[0].value = ""
