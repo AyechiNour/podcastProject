@@ -2,9 +2,10 @@ const _ = require("lodash");
 const Models = require("../models");
 const axios = require('axios');
 const { Configuration, OpenAIApi } = require("openai")
+const multer = require('multer');
 
 const config = new Configuration({
-    apiKey: "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"
+    apiKey: process.env.OPEN_AI_API
 })
 
 const openai = new OpenAIApi(config)

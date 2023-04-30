@@ -24,7 +24,9 @@ import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactAudioPlayer from 'react-audio-player';
+import lamejs from 'lamejs';
 
+import { useSpeechSynthesis } from 'react-speech-kit';
 export function Profile() {
   const [validate, setvalidate] = useState(false)
   const [Article, setArticle] = useState(null);
@@ -46,6 +48,61 @@ export function Profile() {
     fetchData()
     console.log(Article)
   }, [validate]);
+
+  const handleVoice = async (id, subject, content) => {
+    const synth = window.speechSynthesis; 
+    const utterance = new SpeechSynthesisUtterance(content);
+    synth.speak(utterance);
+    utterance.onend = () => {
+      const audioContext = new AudioContext();
+      const source = audioContext.createMediaStreamSource(
+        synth.getAudioContext().destination.stream
+      );
+      const recorder = new MediaRecorder(source);
+      const chunks = [];
+
+      recorder.ondataavailable = (e) => {
+        chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/wav" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "audio.wav";
+        link.click();
+        URL.revokeObjectURL(url);
+      };
+
+      setTimeout(() => {
+        recorder.stop();
+      }, 2000);
+    }
+      // const formData = new FormData();
+      // formData.append("id", id);
+      // formData.append("subject", subject);
+      // formData.append("audio", audioUrl );
+    
+      // const config = {
+      //   headers: { 'content-type': 'multipart/form-data' }
+      // };
+    
+      // await axios.post("http://localhost:3000/audio/addAudio", formData, config)
+      //   .then((response) => {
+      //     console.log("Audio saved successfully.");
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
+ 
+  
+    
+
+    };
+
+  
+
 
   return (
     <>
@@ -148,7 +205,7 @@ export function Profile() {
                     name={subject}
                     message={content}
                     action={
-                      <Button variant="text" size="sm">
+                      <Button onClick={() => { handleVoice(id, subject, content) }} variant="text" size="sm">
                         convert
                       </Button>
                     }
@@ -161,7 +218,7 @@ export function Profile() {
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Audios
             </Typography>
-            
+
             {/* <ReactAudioPlayer
               src="my_audio_file.ogg"
               autoPlay

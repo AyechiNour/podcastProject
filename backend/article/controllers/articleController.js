@@ -11,7 +11,6 @@ const openai = new OpenAIApi(config)
 
 exports.addArticle = async (data) => {
     try {
-        console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
         let errors = [];
         const subject = data.subject
         const content = data.content

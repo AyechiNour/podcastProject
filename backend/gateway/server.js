@@ -6,7 +6,7 @@ const proxy = require("express-http-proxy")
 const app = Express()
 
 app.use(cors())
-app.use(Express.json())
+// app.use(Express.json())
 
 
 app.use('/article', proxy('http://localhost:3002'))
