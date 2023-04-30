@@ -1,8 +1,10 @@
 const _ = require("lodash");
 const Models = require("../models");
 const axios = require('axios');
+const say = require('say');
+
 const { Configuration, OpenAIApi } = require("openai")
-const multer = require('multer');
+
 
 const config = new Configuration({
     apiKey: process.env.OPEN_AI_API
@@ -13,8 +15,7 @@ const openai = new OpenAIApi(config)
 exports.addAudio = async (data) => {
     try {
         let errors = [];
-        const { subject, content, idArticle } = data;
-
+        const { id, subject, content } = data;
         //Validate all the data coming through.
 
         if (_.isEmpty(subject)) errors = [...errors, "Please fill in your subject"];
@@ -22,7 +23,7 @@ exports.addAudio = async (data) => {
         if (_.isEmpty(content)) errors = [...errors, "Please wait until we finish the content"];
 
         //Verify if idArticle exist
-        const id = await axios.post('http://localhost:3000/article/verifArticle', { id: idArticle })
+        await axios.post('http://localhost:3000/article/verifArticle', { id: 1 })
             .then((response) => {
                 if (response.data.status == false) errors = [...errors, "This id didn't exist"];
             })
@@ -39,14 +40,26 @@ exports.addAudio = async (data) => {
         }
 
         //create new audio
-        const audio = await Models.Audio.create({ subject: subject, content: content, idArticle: idArticle });
-        console.log("Audio's auto-generated ID:", audio.id);
-        if (!audio) {
-            return {
-                status: false,
-                errors: ["Something went wrong please try again later."],
-            };
-        }
+        // const audio = await Models.Audio.create({ subject: subject, content: content, idArticle: id });
+        // console.log("Audio's auto-generated ID:", audio.id);
+        // if (!audio) {
+        //     return {
+        //         status: false,
+        //         errors: ["Something went wrong please try again later."],
+        //     };
+        // }
+console.log("---------")
+        const filename = `${id}${subject}.wav`;
+
+        say.export(content, null, 1, filename, (err) => { // call the export function to convert text to speech and save the audio to a file
+            if (err) {
+                return {
+                    status: false,
+                    errors: ["Something went wrong please try again later."],
+                };
+            }
+        });
+
 
         return {
             status: true,

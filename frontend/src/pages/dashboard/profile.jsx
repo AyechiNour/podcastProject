@@ -23,78 +23,40 @@ import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ReactAudioPlayer from 'react-audio-player';
-import lamejs from 'lamejs';
 
-import { useSpeechSynthesis } from 'react-speech-kit';
+
 export function Profile() {
   const [validate, setvalidate] = useState(false)
   const [Article, setArticle] = useState(null);
 
   const Token = localStorage.getItem('token')
-  console.log("Token", Token)
 
   useEffect(() => {
-    console.log("okkkk")
     async function fetchData() {
       try {
         const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
-        console.log("from profile", allArticles.data.articles)
         setArticle(allArticles.data.articles)
       } catch (error) {
         console.log(error);
       }
     }
     fetchData()
-    console.log(Article)
   }, [validate]);
 
+
+
+
   const handleVoice = async (id, subject, content) => {
-    const synth = window.speechSynthesis; 
-    const utterance = new SpeechSynthesisUtterance(content);
-    synth.speak(utterance);
-    utterance.onend = () => {
-      const audioContext = new AudioContext();
-      const source = audioContext.createMediaStreamSource(
-        synth.getAudioContext().destination.stream
-      );
-      const recorder = new MediaRecorder(source);
-      const chunks = [];
 
-      recorder.ondataavailable = (e) => {
-        chunks.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "audio.wav";
-        link.click();
-        URL.revokeObjectURL(url);
-      };
-
-      setTimeout(() => {
-        recorder.stop();
-      }, 2000);
-    }
-      // const formData = new FormData();
-      // formData.append("id", id);
-      // formData.append("subject", subject);
-      // formData.append("audio", audioUrl );
     
-      // const config = {
-      //   headers: { 'content-type': 'multipart/form-data' }
-      // };
-    
-      // await axios.post("http://localhost:3000/audio/addAudio", formData, config)
-      //   .then((response) => {
-      //     console.log("Audio saved successfully.");
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
+      await axios.post("http://localhost:3000/audio/addAudio", {id:id,subject:subject,content:content})
+        .then((response) => {
+          console.log(response)
+          console.log("Audio saved successfully.");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
  
   
     
