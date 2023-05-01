@@ -11,6 +11,7 @@ import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
+  
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">

@@ -34,7 +34,7 @@ export function Profile() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
+        const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
         setArticle(allArticles.data.articles)
       } catch (error) {
         console.log(error);
@@ -47,7 +47,7 @@ export function Profile() {
 
 
   const handleVoice = async (id, subject, content) => {
-
+console.log(id)
     
       await axios.post("http://localhost:3000/audio/addAudio", {id:id,subject:subject,content:content})
         .then((response) => {

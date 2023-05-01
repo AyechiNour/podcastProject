@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey:true
     },
     subject: DataTypes.STRING,
-    content: DataTypes.BLOB,
+    url: DataTypes.STRING,
     idArticle: DataTypes.BIGINT(60)
   }, {
     sequelize,

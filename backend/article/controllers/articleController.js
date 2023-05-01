@@ -4,7 +4,7 @@ const axios = require('axios');
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-    apiKey:"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"
+    apiKey: "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"
 })
 
 const openai = new OpenAIApi(config)
@@ -33,9 +33,9 @@ exports.addArticle = async (data) => {
                 errors: ["Something went wrong please try again later."]
             }
         }
-        
-        const idUser= tokenDecoded.data.token.payload.idUser
-        console.log("idUser",idUser)
+
+        const idUser = tokenDecoded.data.token.payload.idUser
+        console.log("idUser", idUser)
 
         //Verify if UserId exist
         // const id = await axios.post('http://localhost:3000/user/verifUser', { id: idUser })
@@ -102,20 +102,20 @@ exports.getArticle = async (data) => {
 
         //decodeToken
         const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
-        console.log("----------------------------",tokenDecoded)
+        console.log("----------------------------", tokenDecoded)
         if (!tokenDecoded) {
             return {
                 status: false,
                 errors: ["Something went wrong please try again later."]
             }
         }
-        
-        console.log("data",tokenDecoded.data.token.payload.idUser)
+
+        console.log("data", tokenDecoded.data.token.payload.idUser)
 
         //get articles
         const articles = await Models.Article.findAll({
             where: {
-                idUser: tokenDecoded.data.token.payload.idUser
+                idUser: tokenDecoded.data.token.payload.idUser,
             }
         });
 
@@ -136,12 +136,12 @@ exports.getArticle = async (data) => {
 exports.getArticleNonConverted = async (data) => {
     try {
         let errors = [];
-        const tokenNonConverted = data.token
-        console.log(tokenNonConverted)
+        const token = data.token
+        console.log(token)
 
         //Validate all the data coming through.
 
-        if (_.isEmpty(tokenNonConverted)) errors = [...errors, "Please fill in your token"];
+        if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -152,21 +152,22 @@ exports.getArticleNonConverted = async (data) => {
         }
 
         //decodeToken
-        const tokenDecodedNonConverted = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
-        if (!tokenDecodedNonConverted) {
+        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        console.log("----------------------------", tokenDecoded)
+        if (!tokenDecoded) {
             return {
                 status: false,
                 errors: ["Something went wrong please try again later."]
             }
         }
-        
-        console.log("data",tokenDecodedNonConverted.data.token.payload.idUser)
+
+        console.log("data", tokenDecoded.data.token.payload.idUser)
 
         //get articles
         const articles = await Models.Article.findAll({
             where: {
                 idUser: tokenDecoded.data.token.payload.idUser,
-                status: false
+                status:false
             }
         });
 
@@ -179,7 +180,7 @@ exports.getArticleNonConverted = async (data) => {
         console.log(error);
         return {
             status: false,
-            errors: ["Something went wrong please try again later."],
+            errors: ["Something went wrong please try again later."]
         };
     }
 }
@@ -216,11 +217,10 @@ exports.verifIdArticle = async (data) => {
     try {
         let errors = [];
 
-        let  { id } = data;
-
+        let { id } = data;
         //Validate all the data coming through.
 
-        if (_.isEmpty(id)) errors = [...errors, "Please fill in your id"];
+        if (_.isNaN(id)) errors = [...errors, "Please fill in your id"];
 
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
@@ -229,6 +229,7 @@ exports.verifIdArticle = async (data) => {
                 errors: errors,
             };
         }
+        console.log("---------------------------")
 
         //verify if articleId exist
         const article = await Models.Article.findOne({
@@ -236,6 +237,7 @@ exports.verifIdArticle = async (data) => {
                 id: id
             }
         });
+
 
         if (article) {
             return {
@@ -297,5 +299,52 @@ exports.generateArticle = async (data) => {
             errors: ["Something went wrong please try again later."],
         };
     }
-    
+
+}
+
+
+exports.updateStatusArticle = async (data) => {
+    try {
+        let errors = [];
+
+        let { id } = data;
+        //Validate all the data coming through.
+
+        if (_.isNaN(id)) errors = [...errors, "Please fill in your id"];
+
+        if (!_.isEmpty(errors)) {
+            //If the errors array contains any then escape the function.
+            return {
+                status: false,
+                errors: errors,
+            };
+        }
+
+        //verify if articleId exist
+        const article = await Models.Article.update({
+            status: true,
+        }, {
+            where: {
+                id: id
+            }
+        });
+
+        if (article) {
+            return {
+                status: true,
+                errors: ["Status Article Updates."],
+            };
+        } else {
+            return {
+                status: false,
+                message: ["An article with this id didn't exist."]
+            };
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            status: false,
+            errors: ["Something went wrong please try again later."],
+        };
+    }
 }
