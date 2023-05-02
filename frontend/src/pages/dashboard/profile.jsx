@@ -28,6 +28,8 @@ import axios from "axios";
 export function Profile() {
   const [validate, setvalidate] = useState(false)
   const [Article, setArticle] = useState(null);
+  const [audioUrls, setAudioUrls] = useState({});
+  const [Audio, setAudio] = useState(null);
 
   const Token = localStorage.getItem('token')
 
@@ -47,23 +49,45 @@ export function Profile() {
 
 
   const handleVoice = async (id, subject, content) => {
-console.log(id)
-    
-      await axios.post("http://localhost:3000/audio/addAudio", {id:id,subject:subject,content:content})
-        .then((response) => {
-          console.log(response)
-          console.log("Audio saved successfully.");
-        })
-        .catch((error) => {
-          console.error(error);
+
+    await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
+      .then((response) => {
+        if (response.data.status) {
+          console.log(response.data.message)
+          setvalidate(!validate)
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+
+
+
+  };
+
+
+  useEffect(() => {
+    async function fetchAudioUrls() {
+      await axios.get('http://localhost:3000/audio')
+        .then(async response => {
+          const audioArray = response.data.audios;
+          setAudio(response.data.audios)
+          const urls = {};
+
+          for (const audio of audioArray) {
+            const response = await axios.get(`http://localhost:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
+            const objectUrl = URL.createObjectURL(response.data);
+            urls[audio.id] = objectUrl;
+          }
+
+          setAudioUrls(urls);
         });
- 
-  
-    
 
-    };
+    }
 
-  
+    fetchAudioUrls();
+  }, [validate]);
 
 
   return (

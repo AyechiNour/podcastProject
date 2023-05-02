@@ -26,21 +26,17 @@ export function Tables() {
   const [Article, setArticle] = useState(null);
 
   const Token = localStorage.getItem('token')
-  console.log("Token",Token)
 
   useEffect(() => {
-    console.log("okkkk")
     async function fetchData() {
       try {
         const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
-        console.log(allArticles.data.articles)
         setArticle(allArticles.data.articles)
       } catch (error) {
         console.log(error);
       }
     }
     fetchData()
-    console.log(Article)
   }, [validate]);
 
   const generateArticle = async () => {

@@ -102,7 +102,6 @@ exports.getArticle = async (data) => {
 
         //decodeToken
         const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
-        console.log("----------------------------", tokenDecoded)
         if (!tokenDecoded) {
             return {
                 status: false,

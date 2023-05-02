@@ -9,7 +9,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(Express.json())
  app.use(audioRoute)
-
+ const path = require('path');
+ app.use('/uploads', Express.static(path.join(__dirname,"uploads")));
 
 
 

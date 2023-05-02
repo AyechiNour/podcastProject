@@ -3,9 +3,22 @@ const audioRoute = Express.Router()
 const bodyParser = Express.urlencoded({ extended: true })
 const audioController = require('../controllers/audioController')
 
+
+audioRoute.post('/getAudio', async (req, res, next) => {
+    try {
+        const result = await audioController.getAudio(req.body)
+        res.status(200).json(result)
+	} catch (error) {
+        console.log(error)
+        res.status(400).json(error);
+    }
+}
+);
+
+
+
 audioRoute.post('/addAudio', async (req, res, next) => {
     try {
-        console.log("audiiiiiiiiiiiiiiiiiiiiiii")
         const result = await audioController.addAudio(req.body)
         res.status(200).json(result)
 	} catch (error) {
