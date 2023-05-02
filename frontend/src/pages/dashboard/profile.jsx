@@ -48,23 +48,6 @@ export function Profile() {
 
 
 
-  const handleVoice = async (id, subject, content) => {
-
-    await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
-      .then((response) => {
-        if (response.data.status) {
-          console.log(response.data.message)
-          setvalidate(!validate)
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-
-
-
-  };
 
 
   useEffect(() => {
@@ -87,8 +70,26 @@ export function Profile() {
     }
 
     fetchAudioUrls();
-  }, [validate]);
+  }, [validate,Audio]);
 
+  const handleVoice = async (id, subject, content) => {
+
+    await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
+      .then((response) => {
+        if (response.data.status) {
+          console.log(response.data.message)
+          // window.location.reload()
+          setvalidate(true)
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+
+
+
+  };
 
   return (
     <>
@@ -107,7 +108,8 @@ export function Profile() {
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Ayechi Nour
+                  Ayechi Nour     {validate ? 'true' : "false"}
+
                 </Typography>
               </div>
             </div>
@@ -237,7 +239,7 @@ export function Profile() {
                     </CardBody>
                     <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
                       <div>
-                      <audio controls src={audioUrls[id]}></audio>
+                        <audio controls src={audioUrls[id]}></audio>
 
                       </div>
                     </CardFooter>
