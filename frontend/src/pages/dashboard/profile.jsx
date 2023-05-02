@@ -210,26 +210,19 @@ export function Profile() {
               autoPlay
               controls
             /> */}
- {Audio != null && audioUrls &&
-        Audio.map(({ id, subject, url }) => (
-          <div key={id}>
-            <h2>{subject}</h2>
-            <audio controls src={audioUrls[id]}></audio>
-          </div>
-        ))
-      }
+
             <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
-                ({ img, title, route, members }) => (
-                  <Card key={title} color="transparent" shadow={false}>
+              {Audio != null && audioUrls &&
+                Audio.map(({ id, subject, url }) => (
+                  <Card key={subject} color="transparent" shadow={false}>
                     <CardHeader
                       floated={false}
                       color="gray"
                       className="mx-0 mt-0 mb-4 h-64 xl:h-40"
                     >
                       <img
-                        src={img}
-                        alt={title}
+                        src={"/img/audio1.png"}
+                        alt={subject}
                         className="h-full w-full object-cover"
                       />
                     </CardHeader>
@@ -239,23 +232,18 @@ export function Profile() {
                         color="blue-gray"
                         className="mt-1 mb-2"
                       >
-                        {title}
+                        {subject}
                       </Typography>
                     </CardBody>
                     <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
                       <div>
-                        <img src="/img/nivAudio1.jpg" alt="" srcset="" />
-                        {/* <Button variant="outlined" size="sm">
-                          Start
-                        </Button>
-                        <Button variant="outlined" size="sm">
-                          Stop
-                        </Button> */}
+                      <audio controls src={audioUrls[id]}></audio>
+
                       </div>
                     </CardFooter>
                   </Card>
                 )
-              )}
+                )}
             </div>
           </div>
         </CardBody>
