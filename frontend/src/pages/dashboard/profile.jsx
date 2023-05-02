@@ -69,7 +69,7 @@ export function Profile() {
 
   useEffect(() => {
     async function fetchAudioUrls() {
-      await axios.get('http://localhost:3000/audio')
+      await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
         .then(async response => {
           const audioArray = response.data.audios;
           setAudio(response.data.audios)
@@ -210,7 +210,14 @@ export function Profile() {
               autoPlay
               controls
             /> */}
-
+ {Audio != null && audioUrls &&
+        Audio.map(({ id, subject, url }) => (
+          <div key={id}>
+            <h2>{subject}</h2>
+            <audio controls src={audioUrls[id]}></audio>
+          </div>
+        ))
+      }
             <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
               {projectsData.map(
                 ({ img, title, route, members }) => (
