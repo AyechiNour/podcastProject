@@ -9,9 +9,11 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useContext, useRef } from "react";
+import { useContext, useRef,useState } from "react";
 import axios from 'axios';
 import LoginContext from "@/context/loginContext";
+import _ from 'lodash';
+
 
 export function SignUp() {
 
@@ -20,14 +22,31 @@ export function SignUp() {
   const password = useRef(null)
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
+  const  [formErrors, updateFormErrors] = useState({});
 
+  const validateEmail = (email) => email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
   const signup = () => {
     let userName = name.current.getElementsByTagName('input')[0].value
     let userEmail = email.current.getElementsByTagName('input')[0].value
     let userPassword = password.current.getElementsByTagName('input')[0].value
+    console.log(validateEmail(userEmail))
+
+    let errors = {};
+
+    // if (_.isEmpty(formData.email) || !Globals.validateEmail(formData.email)) errors = { ...errors, email: 'Your email is reqiured' };
+    if (_.isEmpty(userPassword)) errors = { ...errors, password: 'Your password is required' };
+    if (_.isEmpty(userName)) errors = { ...errors, name: 'Your name is required' };
+    if ((_.isEmpty(userEmail)) || !validateEmail(userEmail)) errors = { ...errors, email: 'Invalid email' };
+
+
+
+    updateFormErrors(errors);
+
+    if (!_.isEmpty(errors)) return; 
     const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
     user.then((result) => {
       console.log(result)
+ 
 
       if (result.data.status) {
         localStorage.setItem('token', result.data.token)
@@ -38,6 +57,10 @@ export function SignUp() {
     }).catch((error) => {
       console.log(error)
     })
+  }
+
+  const displayError = (key) => {
+    if (!_.isEmpty(formErrors[key])) return <div className="text-red-700">{formErrors[key]}</div>
   }
 
   return (
@@ -60,8 +83,14 @@ export function SignUp() {
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
             <Input label="Name" size="lg" ref={name} />
+            {displayError('name')}
+
             <Input type="email" label="Email" size="lg" ref={email} />
+            {displayError('email')}
+
             <Input type="password" label="Password" size="lg" ref={password} />
+            {displayError('password')}
+
             <div className="-ml-2.5">
               <Checkbox label="I agree the Terms and Conditions" />
             </div>

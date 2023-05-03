@@ -9,9 +9,11 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef,useState } from "react";
 import axios from 'axios';
 import LoginContext from "@/context/loginContext";
+import _ from 'lodash';
+
 
 export function SignIn() {
 
@@ -19,10 +21,23 @@ export function SignIn() {
   const password = useRef(null)
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
+  const  [formErrors, updateFormErrors] = useState({});
+  const validateEmail = (email) => email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
   const signin = () => {
     const emailValue = email.current.getElementsByTagName('input')[0].value
     const passwordValue = password.current.getElementsByTagName('input')[0].value
+    let errors = {};
+
+    // if (_.isEmpty(formData.email) || !Globals.validateEmail(formData.email)) errors = { ...errors, email: 'Your email is reqiured' };
+    if (_.isEmpty(passwordValue)) errors = { ...errors, password: 'Your password is required' };
+    if ((_.isEmpty(emailValue)) || !validateEmail(emailValue)) errors = { ...errors, email: 'Invalid email' };
+
+
+
+    updateFormErrors(errors);
+
+    if (!_.isEmpty(errors)) return; 
     const user = axios.post('http://localhost:3000/user/signIn', { email: emailValue, password: passwordValue })
     user.then((result) => {
       if (result.data.status) {
@@ -35,6 +50,9 @@ export function SignIn() {
     }).catch((error) => {
       console.log(error)
     })
+  }
+  const displayError = (key) => {
+    if (!_.isEmpty(formErrors[key])) return <div className="text-red-700">{formErrors[key]}</div>
   }
 
   return (
@@ -57,7 +75,11 @@ export function SignIn() {
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
             <Input type="email" label="Email" size="lg" ref={email} />
+            {displayError('email')}
+
             <Input type="password" label="Password" size="lg" ref={password} />
+            {displayError('password')}
+
             <div className="-ml-2.5">
               <Checkbox label="Remember Me" />
             </div>

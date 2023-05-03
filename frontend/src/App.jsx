@@ -10,19 +10,15 @@ function App() {
     window.addEventListener('storage', function (event) {
       if (event.storageArea === localStorage) {
         if (event.key == "token") {
-          if (localStorage.getItem('token') == null || localStorage.getItem('token') == null) {
+           if (event.newValue === null || event.newValue.length === 0) {
             setIsLoggedIn(false)
             localStorage.removeItem('token');
             navigate('/auth/sign-in');
+            window.location.reload();
           }
         }
       }
     });
-
-    window.addEventListener("stroage", () => {
-      // if token doas not exist loggedin false redirect login
-
-    })
   }, [])
 
 

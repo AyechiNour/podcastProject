@@ -6,7 +6,7 @@ require('dotenv').config();
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-    apiKey: "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"
+    apiKey: process.env.OPEN_AI_API
 })
 const openai = new OpenAIApi(config)
 
@@ -235,6 +235,8 @@ exports.verifIdArticle = async (data) => {
 
 exports.generateArticle = async (data) => {
     try {
+        console.log(process.env.OPEN_AI_API)
+
         let errors = [];
         const subject = data.subject;
 
@@ -256,8 +258,8 @@ exports.generateArticle = async (data) => {
         const article = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: prompt,
-            max_tokens: 2048,
-            temperature: 1
+            max_tokens: 150,
+            temperature: 0.9
         })
         console.log(article)
 
@@ -267,6 +269,7 @@ exports.generateArticle = async (data) => {
         };
 
     } catch (error) {
+        console.log(error)
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -320,3 +323,4 @@ exports.updateStatusArticle = async (data) => {
         };
     }
 }
+
