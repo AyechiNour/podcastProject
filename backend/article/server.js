@@ -23,7 +23,6 @@ app.get('/test', async (req, res, next) => {
             max_tokens: 150,
             temperature: 0.9
         })
-        console.log(test)
         res.status(200).json(test)
     } catch (error) {
         res.status(400).json(error)

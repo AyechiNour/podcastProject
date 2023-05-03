@@ -29,7 +29,6 @@ export function SignUp() {
     let userName = name.current.getElementsByTagName('input')[0].value
     let userEmail = email.current.getElementsByTagName('input')[0].value
     let userPassword = password.current.getElementsByTagName('input')[0].value
-    console.log(validateEmail(userEmail))
 
     let errors = {};
 
@@ -45,8 +44,6 @@ export function SignUp() {
     if (!_.isEmpty(errors)) return; 
     const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
     user.then((result) => {
-      console.log(result)
- 
 
       if (result.data.status) {
         localStorage.setItem('token', result.data.token)

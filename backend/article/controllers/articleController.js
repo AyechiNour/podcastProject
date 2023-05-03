@@ -235,7 +235,6 @@ exports.verifIdArticle = async (data) => {
 
 exports.generateArticle = async (data) => {
     try {
-        console.log(process.env.OPEN_AI_API)
 
         let errors = [];
         const subject = data.subject;
@@ -261,7 +260,6 @@ exports.generateArticle = async (data) => {
             max_tokens: 150,
             temperature: 0.9
         })
-        console.log(article)
 
         return {
             status: true,
