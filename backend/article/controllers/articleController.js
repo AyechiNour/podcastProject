@@ -1,12 +1,15 @@
 const _ = require("lodash");
 const Models = require("../models");
 const axios = require('axios');
+require('dotenv').config();
+
 const { Configuration, OpenAIApi } = require("openai")
 
 const config = new Configuration({
-    apiKey: "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"
+    apiKey: "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"
 })
-
+console.log("///////////////////////////////////")
+console.log(process.env.OPEN_AI)
 const openai = new OpenAIApi(config)
 
 exports.addArticle = async (data) => {
@@ -74,7 +77,6 @@ exports.addArticle = async (data) => {
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -250,7 +252,7 @@ exports.verifIdArticle = async (data) => {
             };
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -260,6 +262,8 @@ exports.verifIdArticle = async (data) => {
 
 exports.generateArticle = async (data) => {
     try {
+        console.log("-------------------------------------------------------------------------------------------------------------")
+        console.log(process.env.OPEN_AI_API)
         let errors = [];
         const subject = data.subject;
 
@@ -293,6 +297,7 @@ exports.generateArticle = async (data) => {
         };
 
     } catch (error) {
+        console.log(error)
         return {
             status: false,
             errors: ["Something went wrong please try again later."],

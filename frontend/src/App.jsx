@@ -1,7 +1,14 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard, Auth } from "@/layouts";
+import { useEffect } from "react";
 
 function App() {
+useEffect(() => {
+window.addEventListener("stroage",()=>{
+// if token doas not exist loggedin false redirect login
+
+})
+}, [])
 
 
   return (

@@ -12,7 +12,10 @@ export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
   
+  useEffect(() => {
+    // if token not exist(nrajaa false) or loggein is false redirect to login
 
+  }, [])
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav

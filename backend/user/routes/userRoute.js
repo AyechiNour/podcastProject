@@ -25,6 +25,8 @@ userRoute.post('/signIn', async (req, res, next) => {
 
 userRoute.post('/signUp', async (req, res, next) => {
     try {
+        console.log("---------------")
+        console.log(req.body)
         const result = await userController.signUp(req.body)
         res.status(200).json(result)
 	} catch (error) {

@@ -44,6 +44,7 @@ export function Tables() {
       var subject = refSubject.current.getElementsByTagName('input')[0].value
       console.log(subject)
       const content = await axios.post('http://localhost:3000/article/generateArticle', { subject: subject })
+      console.log(content)
       contentRef.current.innerHTML = content.data.articles
       setvalue(content.data.articles)
     } catch (error) {

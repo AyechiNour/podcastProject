@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Navbar, Footer } from "@/widgets/layout";
 import routes from "@/routes";
+import { useEffect } from "react";
 
 export function Auth() {
   const navbarRoutes = [
@@ -31,6 +32,11 @@ export function Auth() {
       icon: ArrowRightOnRectangleIcon,
     },
   ];
+  useEffect(() => {
+    // if token exist and liggein is true redirect to dashboard
+
+  }, [])
+  
 
   return (
     <div className="relative min-h-screen w-full">

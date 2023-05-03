@@ -25,8 +25,12 @@ export function SignIn() {
     console.log(passwordValue)
     const user = axios.post('http://localhost:3000/user/signIn', { email: emailValue, password: passwordValue })
     user.then((result) => {
-      localStorage.setItem('token', result.data.token)
-      navigate('/dashboard/profile');
+      console.log(result)
+      if(result.data.status){
+        localStorage.setItem('token', result.data.token)
+        navigate('/dashboard/profile');
+      }
+
     }).catch((error) => {
       console.log(error)
     })
