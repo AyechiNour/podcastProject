@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, redirect, useNavigate } from "react-router-dom";
 
 import {
   Sidenav,
@@ -7,15 +7,26 @@ import {
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
+import { useContext, useEffect } from "react";
+import LoginContext from "@/context/loginContext";
 
 export function Dashboard() {
+
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
-  
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
     // if token not exist(nrajaa false) or loggein is false redirect to login
-
+    if (localStorage.getItem("token") == null || !isLoggedIn) {
+      // The item exists in localStorage
+      setIsLoggedIn(false)
+      localStorage.removeItem("token");
+      navigate('/auth/sign-in');
+    }
   }, [])
+
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav

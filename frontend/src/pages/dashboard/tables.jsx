@@ -42,9 +42,7 @@ export function Tables() {
   const generateArticle = async () => {
     try {
       var subject = refSubject.current.getElementsByTagName('input')[0].value
-      console.log(subject)
       const content = await axios.post('http://localhost:3000/article/generateArticle', { subject: subject })
-      console.log(content)
       contentRef.current.innerHTML = content.data.articles
       setvalue(content.data.articles)
     } catch (error) {
@@ -55,11 +53,7 @@ export function Tables() {
   const addArticle = async () => {
     try {
       let subject = refSubject.current.getElementsByTagName('input')[0].value
-      console.log("subject",subject)
-      console.log("value",value)
-      console.log("token",Token)
       const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, token: Token })
-      console.log(result)
       setvalidate(!validate)
       refSubject.current.getElementsByTagName('input')[0].value = ""
       contentRef.current.innerHTML = ""
@@ -70,10 +64,7 @@ export function Tables() {
 
   const deleteArticle = async (id) => {
     try {
-      console.log("from delete")
-      console.log(id)
       const deleteResult = await axios.post('http://localhost:3000/article/deleteArticle', { id: id })
-      console.log(deleteResult)
       setvalidate(!validate)
     } catch (error) {
       console.log(error)

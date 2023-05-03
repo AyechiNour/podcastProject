@@ -39,11 +39,9 @@ exports.getAudio = async (data) => {
       }
     }
 
-    // console.log("data", tokenDecoded.data.token.payload.idUser)
-
     //get articles
     const articles = await axios.post('http://localhost:3000/article/getArticle', { token: token })
-    // console.log( articles)
+    
     if (!articles) {
       return {
         status: false,
@@ -72,7 +70,6 @@ exports.getAudio = async (data) => {
     };
 
   } catch (error) {
-    console.log(error);
     return {
       status: false,
       errors: ["Something went wrong please try again later."]
@@ -119,8 +116,6 @@ exports.addAudio = async (data) => {
           // { transaction: t } // pass the transaction to the create method
         );
 
-        console.log("Audio's auto-generated ID:", audio.id);
-
         if (!audio) {
           // await t.rollback(); // rollback the transaction
           return {
@@ -147,7 +142,6 @@ exports.addAudio = async (data) => {
       message: ["Audio has been created successfully"],
     };
   } catch (error) {
-    console.log(error);
     // await t.rollback(); // rollback the transaction
     return {
       status: false,
@@ -177,7 +171,6 @@ exports.deleteAudio = async (data) => {
     }
 
   } catch (error) {
-    console.log(error);
     return {
       status: false,
       errors: ["Something went wrong please try again later."],

@@ -79,7 +79,6 @@ export function Profile() {
         await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
             .then((response) => {
                 if (response.data.status) {
-                    console.log(response.data.message)
                     // window.location.reload()
                     setvalidate(true)
                     setSuccess(true)

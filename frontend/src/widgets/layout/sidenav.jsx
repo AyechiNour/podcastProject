@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   Avatar,
@@ -9,18 +9,27 @@ import {
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
+import { useContext } from "react";
+import LoginContext from "@/context/loginContext";
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
+  const navigate = useNavigate();
+
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-blue-gray-800 to-blue-gray-900",
     white: "bg-white shadow-lg",
     transparent: "bg-transparent",
   };
-  console.log(routes)
+  const signOut = () => {
+    setIsLoggedIn(false)
+    localStorage.removeItem('token');
+    navigate('/auth/sign-in');
+  }
 
   return (
     <aside
@@ -97,29 +106,30 @@ export function Sidenav({ brandImg, brandName, routes }) {
             ))}
           </ul>
         ))}
-      
-            <Button
-              variant={false ? "gradient" : "text"}
-              color={
-                false
-                  ? sidenavColor
-                  : sidenavType === "dark"
-                    ? "white"
-                    : "blue-gray"
-              }
-              className="flex items-center gap-4 px-4 capitalize"
-              fullWidth
-            >
-              <ArrowRightOnRectangleIcon  {...icon} />
-              <Typography
-                color="inherit"
-                className="font-medium capitalize"
-              >
-                Sign Out
-              </Typography>
-            </Button>
-        
-       
+
+        <Button
+          variant={false ? "gradient" : "text"}
+          color={
+            false
+              ? sidenavColor
+              : sidenavType === "dark"
+                ? "white"
+                : "blue-gray"
+          }
+          className="flex items-center gap-4 px-4 capitalize"
+          fullWidth
+          onClick={signOut}
+        >
+          <ArrowRightOnRectangleIcon  {...icon} />
+          <Typography
+            color="inherit"
+            className="font-medium capitalize"
+          >
+            Sign Out
+          </Typography>
+        </Button>
+
+
       </div>
     </aside>
   );

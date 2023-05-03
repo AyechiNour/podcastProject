@@ -1,22 +1,40 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard, Auth } from "@/layouts";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import LoginContext from "./context/loginContext";
 
 function App() {
-useEffect(() => {
-window.addEventListener("stroage",()=>{
-// if token doas not exist loggedin false redirect login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-})
-}, [])
+  useEffect(() => {
+    window.addEventListener('storage', function (event) {
+      if (event.storageArea === localStorage) {
+        if (event.key == "token") {
+          if (localStorage.getItem('token') == null || localStorage.getItem('token') == null) {
+            setIsLoggedIn(false)
+            localStorage.removeItem('token');
+            navigate('/auth/sign-in');
+          }
+        }
+      }
+    });
+
+    window.addEventListener("stroage", () => {
+      // if token doas not exist loggedin false redirect login
+
+    })
+  }, [])
 
 
   return (
-    <Routes>
-      <Route path="/dashboard/*" element={<Dashboard />} />
-      <Route path="/auth/*" element={<Auth />} />
-      <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
-    </Routes>
+    <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      <Routes>
+        <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="/auth/*" element={<Auth />} />
+        <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+      </Routes>
+    </LoginContext.Provider>
+
   );
 }
 

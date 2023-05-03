@@ -9,8 +9,9 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import axios from 'axios';
+import LoginContext from "@/context/loginContext";
 
 export function SignUp() {
 
@@ -18,17 +19,17 @@ export function SignUp() {
   const email = useRef(null)
   const password = useRef(null)
   const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
 
   const signup = () => {
     let userName = name.current.getElementsByTagName('input')[0].value
     let userEmail = email.current.getElementsByTagName('input')[0].value
     let userPassword = password.current.getElementsByTagName('input')[0].value
     const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
-    console.log(user)
     user.then((result) => {
       if (result.data.status) {
-        
         localStorage.setItem('token', result.data.token)
+        setIsLoggedIn(true)
         navigate('/dashboard/profile');
       }
 

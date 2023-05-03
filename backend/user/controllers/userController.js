@@ -41,7 +41,6 @@ exports.verifId = async (data) => {
             };
         }
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -74,7 +73,6 @@ exports.signIn = async (data) => {
 
 
         if (User) {
-            console.log("1")
             const result = await new Promise((resolve, reject) => {
                 bcrypt.compare(password, User.dataValues.password, (err, result) => {
                     if (err) reject(err);
@@ -90,9 +88,7 @@ exports.signIn = async (data) => {
                     }
                 });
         
-                console.log("aaa")
                 if (coordCorrect) {
-                    console.log("bbbb")
                     const userMeta = await Models.metauser.findOne({
                         idUser: coordCorrect.dataValues.id
                     });
@@ -103,7 +99,6 @@ exports.signIn = async (data) => {
                         errors = [...errors, "Problem with Token"];
                     } else {
                         tokenUser = response.data.token;
-                        console.log(tokenUser);
                         return {
                             status: true,
                             token: tokenUser
@@ -122,7 +117,6 @@ exports.signIn = async (data) => {
                 errors: "Email or password are incorrect",
             };
         }
-        console.log("2")
         return {
             status: false,
             errors: "error",
@@ -167,18 +161,15 @@ exports.signUp = async (data) => {
                 // Store hash in your password DB.
                 if (_.isEmpty(err)) {
                     const user = await Models.user.create({ email: email, password: hash });
-                    console.log(user.dataValues.id)
                     const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id })
                     const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues.id, name: name })
                         .then((response) => {
                             if (response.data.status == false) errors = [...errors, "Problem with Token"];
                             else {
-                                tokenUser = response.data.token,
-                                    console.log("resultat --------------------------------", response.data)
+                                tokenUser = response.data.token
                             }
                         })
                         .catch((error) => {
-                            console.log(error)
                             errors = [...errors, "we can't connect to the other microservice"];
                         });
                 }

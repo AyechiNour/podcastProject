@@ -8,8 +8,6 @@ const { Configuration, OpenAIApi } = require("openai")
 const config = new Configuration({
     apiKey: "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"
 })
-console.log("///////////////////////////////////")
-console.log(process.env.OPEN_AI)
 const openai = new OpenAIApi(config)
 
 exports.addArticle = async (data) => {
@@ -29,7 +27,6 @@ exports.addArticle = async (data) => {
 
         //decodeToken
         const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
-        console.log(tokenDecoded)
         if (!tokenDecoded) {
             return {
                 status: false,
@@ -38,19 +35,7 @@ exports.addArticle = async (data) => {
         }
 
         const idUser = tokenDecoded.data.token.payload.idUser
-        console.log("idUser", idUser)
-
-        //Verify if UserId exist
-        // const id = await axios.post('http://localhost:3000/user/verifUser', { id: idUser })
-        //     .then((response) => {
-        //         if (response.data.status == false) errors = [...errors, "This id didn't exist"];
-        //     })
-        //     .catch((error) => {
-        //         errors = [...errors, "we can't connect to the other microservice"];
-        //     });
-
-        // console.log("idExist",id)
-
+    
         if (!_.isEmpty(errors)) {
             //If the errors array contains any then escape the function.
             return {
@@ -59,10 +44,9 @@ exports.addArticle = async (data) => {
             };
         }
 
-        console.log("avant article")
         //create new article
         const article = await Models.Article.create({ subject: subject, content: content, status: false, idUser: idUser });
-        // console.log(article)
+
         console.log("article's auto-generated ID:", article.id);
         if (!article) {
             return {
@@ -88,8 +72,7 @@ exports.getArticle = async (data) => {
     try {
         let errors = [];
         const token = data.token
-        console.log(token)
-
+    
         //Validate all the data coming through.
 
         if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
@@ -110,8 +93,6 @@ exports.getArticle = async (data) => {
                 errors: ["Something went wrong please try again later."]
             }
         }
-
-        console.log("data", tokenDecoded.data.token.payload.idUser)
 
         //get articles
         const articles = await Models.Article.findAll({
@@ -126,7 +107,6 @@ exports.getArticle = async (data) => {
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."]
@@ -138,7 +118,6 @@ exports.getArticleNonConverted = async (data) => {
     try {
         let errors = [];
         const token = data.token
-        console.log(token)
 
         //Validate all the data coming through.
 
@@ -154,15 +133,13 @@ exports.getArticleNonConverted = async (data) => {
 
         //decodeToken
         const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
-        console.log("----------------------------", tokenDecoded)
+
         if (!tokenDecoded) {
             return {
                 status: false,
                 errors: ["Something went wrong please try again later."]
             }
         }
-
-        console.log("data", tokenDecoded.data.token.payload.idUser)
 
         //get articles
         const articles = await Models.Article.findAll({
@@ -178,7 +155,6 @@ exports.getArticleNonConverted = async (data) => {
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."]
@@ -190,7 +166,7 @@ exports.deleteArticle = async (data) => {
     try {
         let errors = [];
         const idArticle = data.id;
-        console.log(data)
+       
         //delete article
         const articles = await Models.Article.destroy({
             where: {
@@ -206,7 +182,6 @@ exports.deleteArticle = async (data) => {
         }
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -230,7 +205,6 @@ exports.verifIdArticle = async (data) => {
                 errors: errors,
             };
         }
-        console.log("---------------------------")
 
         //verify if articleId exist
         const article = await Models.Article.findOne({
@@ -252,7 +226,6 @@ exports.verifIdArticle = async (data) => {
             };
         }
     } catch (error) {
-        // console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -262,8 +235,6 @@ exports.verifIdArticle = async (data) => {
 
 exports.generateArticle = async (data) => {
     try {
-        console.log("-------------------------------------------------------------------------------------------------------------")
-        console.log(process.env.OPEN_AI_API)
         let errors = [];
         const subject = data.subject;
 
@@ -289,15 +260,12 @@ exports.generateArticle = async (data) => {
             temperature: 1
         })
 
-        console.log(article.data.choices[0].text)
-
         return {
             status: true,
             articles: article.data.choices[0].text
         };
 
     } catch (error) {
-        console.log(error)
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -345,7 +313,6 @@ exports.updateStatusArticle = async (data) => {
             };
         }
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],

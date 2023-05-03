@@ -36,7 +36,6 @@ articleRoute.post('/getArticleNonConverted', async (req, res, next) => {
 articleRoute.post('/deleteArticle', async (req, res, next) => {
     try {
         const result = await articleController.deleteArticle(req.body)
-        console.log("req",req.body)
         res.status(200).json(result)
 	} catch (error) {
         res.status(400).json(error);
@@ -64,7 +63,6 @@ articleRoute.post('/generateArticle',async (req,res,next)=>{
 })
 articleRoute.post('/updateArticleStatus',async (req,res,next)=>{
     try {
-        console.log(req.body)
         const result = await articleController.updateStatusArticle(req.body)
         res.status(200).json(result)
     } catch (error) {

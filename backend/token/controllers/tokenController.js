@@ -8,8 +8,6 @@ exports.getToken = async (data) => {
        
         let errors = [];
         const { id,name } = data;
-        console.log("id:",id)
-        console.log("name",name)
 
         //Validate all the data coming through.
         if (_.isNaN(id)) errors = [...errors, "Please fill in your id"];
@@ -25,7 +23,6 @@ exports.getToken = async (data) => {
 
         //create new token
         let token = jwt.sign({idUser:id, nameUser:name},privateKey,{expiresIn:'10h'})
-        console.log(token)
         if (!token) {
             return {
                 status: false,
@@ -39,7 +36,6 @@ exports.getToken = async (data) => {
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -69,7 +65,6 @@ exports.verifToken = async (data) => {
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
@@ -94,14 +89,11 @@ exports.decodeToken = async (data) => {
 
         //decode token
         const tokenDecoded = jwt.decode(tokenUser,{complete:true})
-        console.log(tokenDecoded)
-
         return {
             token : tokenDecoded 
         };
 
     } catch (error) {
-        console.log(error);
         return {
             status: false,
             errors: ["Something went wrong please try again later."],
