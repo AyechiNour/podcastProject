@@ -259,6 +259,7 @@ exports.generateArticle = async (data) => {
             max_tokens: 2048,
             temperature: 1
         })
+        console.log(article)
 
         return {
             status: true,

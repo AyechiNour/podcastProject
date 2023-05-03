@@ -128,59 +128,52 @@ exports.signIn = async (data) => {
 
 exports.signUp = async (data) => {
     try {
-        var tokenUser = null;
-        let errors = [];
-        let { name, email, password } = data;
-
-        //Validate all the data coming through.
-        if (_.isEmpty(name)) errors = [...errors, "Please fill in your name"];
-        if (_.isEmpty(email)) errors = [...errors, "Please fill in your email"];
-        if (_.isEmpty(password)) errors = [...errors, "Please fill in your password"];
-
-        if (!_.isEmpty(errors)) {
-            //If the errors array contains any then escape the function.
-            return {
-                status: false,
-                errors: errors,
-            };
-        }
-
-        const User = await Models.user.findOne({
-            where: {
-                email: email,
-            }
-        });
-
-        if (User) {
-            return {
-                status: false,
-                errors: "User exists",
-            };
-        } else {
-            bcrypt.hash(password, saltRounds, async function (err, hash) {
-                // Store hash in your password DB.
-                if (_.isEmpty(err)) {
-                    const user = await Models.user.create({ email: email, password: hash });
-                    const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id })
-                    const TokenUser = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues.id, name: name })
-                        .then((response) => {
-                            if (response.data.status == false) errors = [...errors, "Problem with Token"];
-                            else {
-                                tokenUser = response.data.token
-                            }
-                        })
-                        .catch((error) => {
-                            errors = [...errors, "we can't connect to the other microservice"];
-                        });
-                }
-            });
-
-        }
+      var tokenUser = null;
+      let errors = [];
+      let { name, email, password } = data;
+  
+      //Validate all the data coming through.
+      if (_.isEmpty(name)) errors = [...errors, "Please fill in your name"];
+      if (_.isEmpty(email)) errors = [...errors, "Please fill in your email"];
+      if (_.isEmpty(password)) errors = [...errors, "Please fill in your password"];
+  
+      if (!_.isEmpty(errors)) {
+        //If the errors array contains any then escape the function.
         return {
-            status: true,
-            token: tokenUser
+          status: false,
+          errors: errors,
         };
+      }
+  
+      const User = await Models.user.findOne({
+        where: {
+          email: email,
+        }
+      });
+  
+      if (User) {
+        return {
+          status: false,
+          errors: "User exists",
+        };
+      } else {
+        const hash = await bcrypt.hash(password, saltRounds);
+        const user = await Models.user.create({ email: email, password: hash });
+        const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id });
+        const response = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues.id, name: name });
+  
+        if (response.data.status == false) {
+          errors = [...errors, "Problem with Token"];
+        } else {
+          tokenUser = response.data.token;
+        }
+      }
+      return {
+        status: true,
+        token: tokenUser
+      };
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-}
+  }
+  

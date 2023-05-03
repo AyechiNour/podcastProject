@@ -27,6 +27,8 @@ export function SignUp() {
     let userPassword = password.current.getElementsByTagName('input')[0].value
     const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
     user.then((result) => {
+      console.log(result)
+
       if (result.data.status) {
         localStorage.setItem('token', result.data.token)
         setIsLoggedIn(true)
