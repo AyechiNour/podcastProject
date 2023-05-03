@@ -4,13 +4,14 @@ import React, { useEffect, useState } from "react";
 import LoginContext from "./context/loginContext";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
 
   useEffect(() => {
     window.addEventListener('storage', function (event) {
       if (event.storageArea === localStorage) {
         if (event.key == "token") {
-           if (event.newValue === null || event.newValue.length === 0) {
+          if (event.newValue === null || event.newValue.length === 0) {
             setIsLoggedIn(false)
             localStorage.removeItem('token');
             navigate('/auth/sign-in');

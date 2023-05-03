@@ -81,7 +81,7 @@ export function Home() {
                     </CardBody>
                     <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
                       <div>
-                        <img src="/img/nivAudio1.jpg" alt="" srcset="" />
+                        <img src="/img/nivAudio1.jpg" alt="" srcSet="" />
                         {/* <Button variant="outlined" size="sm">
                           Start
                         </Button>
