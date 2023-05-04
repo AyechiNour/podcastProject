@@ -28,7 +28,6 @@ import axios from "axios";
 import _ from "lodash";
 
 export function Profile() {
-    const [validate, setvalidate] = useState(false)
     const [Article, setArticle] = useState(null);
     const [audioUrls, setAudioUrls] = useState({});
     const [Audio, setAudio] = useState(null);
@@ -37,7 +36,8 @@ export function Profile() {
     const Token = localStorage.getItem('token')
     const [formErrorsAudio, updateFormErrorsAudio] = useState({});
     const [userName, setUserName] = useState("");
-    
+    const [update, setUpdate] = useState(false);
+
     useEffect(() => {
         async function decodeToken() {
             try {
@@ -61,6 +61,8 @@ export function Profile() {
                     updateFormErrors(errors);
                 } else {
                     setArticle(allArticles.data.articles)
+                    console.log(Article)
+                    console.log(update)
                 }
             } catch (error) {
                 errors = { ...errors, error: "Something went wrong, please try again later" }
@@ -68,7 +70,7 @@ export function Profile() {
             }
         }
         fetchData()
-    }, [validate]);
+    }, [update]);
 
     useEffect(() => {
         let errors = {};
@@ -97,25 +99,22 @@ export function Profile() {
                 });
         }
         fetchAudioUrls();
-    }, [validate]);
+    }, [update]);
 
     const handleVoice = async (id, subject, content) => {
+        setUpdate(!update);
         setSuccess(false)
         await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
             .then((response) => {
                 if (response.data.status) {
                     // window.location.reload()
-                    setvalidate(true)
                     setSuccess(true)
+                    console.log(update)
                 }
             })
             .catch((error) => {
                 console.error(error);
             });
-
-
-
-
     };
 
     return (
@@ -221,18 +220,19 @@ export function Profile() {
                             <ul className="flex flex-col gap-6">
                                 {Article != null &&
                                     Article.map(({ id, subject, content }) => (
-                                        <><MessageCard
-                                            key={id}
-                                            name={subject}
-                                            message={content}
-                                            action={
-                                                <Button onClick={() => { handleVoice(id, subject, content) }} variant="text" size="sm">
-                                                    convert
+                                        <div className="flex flex-row items-center">
+                                            <MessageCard
+
+                                                key={id}
+                                                name={subject}
+                                                message={content}
+                                            />
+                                            <Link className="ml-2" >
+                                                <Button variant="outlined" size="sm" onClick={() => { handleVoice(id, subject, content)}}>
+                                                    Convert
                                                 </Button>
-                                            }
-                                        />
-                                            {Success && <span>audio ok</span>}
-                                        </>
+                                            </Link>
+                                        </div>
 
                                     ))}
                             </ul>
@@ -254,17 +254,17 @@ export function Profile() {
                                 </Alert>
                             </div>
                             :
-                            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
+                            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-2">
                                 {Audio != null && audioUrls &&
                                     Audio.map(({ id, subject, url }) => (
-                                        <Card key={subject} color="transparent" shadow={false}>
+                                        <Card className="drop-shadow-md border p-4" key={subject} color="transparent" shadow={false}>
                                             <CardHeader
                                                 floated={false}
                                                 color="gray"
                                                 className="mx-0 mt-0 mb-4 h-64 xl:h-40"
                                             >
                                                 <img
-                                                    src={"/img/audio1.png"}
+                                                    src={"/img/podcast1.jpg"}
                                                     alt={subject}
                                                     className="h-full w-full object-cover"
                                                 />
@@ -278,10 +278,9 @@ export function Profile() {
                                                     {subject}
                                                 </Typography>
                                             </CardBody>
-                                            <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
+                                            <CardFooter className="mt-6 flex items-center justify-center py-0 px-1">
                                                 <div>
                                                     <audio controls src={audioUrls[id]}></audio>
-
                                                 </div>
                                             </CardFooter>
                                         </Card>
