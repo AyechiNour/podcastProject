@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useContext, useRef,useState } from "react";
+import { useContext, useRef, useState } from "react";
 import axios from 'axios';
 import LoginContext from "@/context/loginContext";
 import _ from 'lodash';
@@ -22,7 +22,7 @@ export function SignUp() {
   const password = useRef(null)
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const  [formErrors, updateFormErrors] = useState({});
+  const [formErrors, updateFormErrors] = useState({});
 
   const validateEmail = (email) => email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
   const signup = () => {
@@ -41,18 +41,20 @@ export function SignUp() {
 
     updateFormErrors(errors);
 
-    if (!_.isEmpty(errors)) return; 
+    if (!_.isEmpty(errors)) return;
     const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
     user.then((result) => {
-
       if (result.data.status) {
         localStorage.setItem('token', result.data.token)
         setIsLoggedIn(true)
-        navigate('/dashboard/profile');
+        navigate('/dashboard/home');
+      } else {
+        errors = { ...errors, error: result.data.errors }
+        updateFormErrors(errors);
       }
-
     }).catch((error) => {
-      console.log(error)
+      errors = { ...errors, error: "Something went wrong, please try again later" }
+      updateFormErrors(errors);
     })
   }
 
@@ -87,10 +89,7 @@ export function SignUp() {
 
             <Input type="password" label="Password" size="lg" ref={password} />
             {displayError('password')}
-
-            <div className="-ml-2.5">
-              <Checkbox label="I agree the Terms and Conditions" />
-            </div>
+            {displayError("error")}
           </CardBody>
           <CardFooter className="pt-0">
             <Button variant="gradient" fullWidth onClick={() => { signup() }}>

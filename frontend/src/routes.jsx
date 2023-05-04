@@ -34,13 +34,14 @@ export const routes = [
         name: "Articles",
         path: "/tables",
         element: <Tables />,
-      },
+      }
+      ,
       // {
       //   icon: <BellIcon {...icon} />,
       //   name: "notifications",
       //   path: "/notifications",
       //   element: <Notifications />,
-      // },
+      // }
     ],
   },
   {

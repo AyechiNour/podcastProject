@@ -11,19 +11,21 @@ import {
     Switch,
     Tooltip,
     Button,
+    Alert,
 } from "@material-tailwind/react";
 import {
     HomeIcon,
     ChatBubbleLeftEllipsisIcon,
     Cog6ToothIcon,
     PencilIcon,
+    InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import _ from "lodash";
 
 export function Profile() {
     const [validate, setvalidate] = useState(false)
@@ -31,33 +33,55 @@ export function Profile() {
     const [audioUrls, setAudioUrls] = useState({});
     const [Audio, setAudio] = useState(null);
     const [Success, setSuccess] = useState(false);
-
-
+    const [formErrors, updateFormErrors] = useState({});
     const Token = localStorage.getItem('token')
+    const [formErrorsAudio, updateFormErrorsAudio] = useState({});
+    const [userName, setUserName] = useState("");
+    
+    useEffect(() => {
+        async function decodeToken() {
+            try {
+                const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: Token })
+                setUserName(tokenDecoded.data.token.payload.nameUser)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        decodeToken();
+    }, []);
 
     useEffect(() => {
+        let errors = {};
         async function fetchData() {
+            let errors = {};
             try {
                 const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
-                setArticle(allArticles.data.articles)
+                if (_.isEmpty(allArticles.data.articles)) {
+                    errors = { ...errors, error: 'Empty data' };
+                    updateFormErrors(errors);
+                } else {
+                    setArticle(allArticles.data.articles)
+                }
             } catch (error) {
-                console.log(error);
+                errors = { ...errors, error: "Something went wrong, please try again later" }
+                updateFormErrors(errors);
             }
         }
         fetchData()
     }, [validate]);
 
-
-
-
-
-
     useEffect(() => {
+        let errors = {};
         async function fetchAudioUrls() {
             await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
                 .then(async response => {
                     const audioArray = response.data.audios;
-                    setAudio(response.data.audios)
+                    if (_.isEmpty(audioArray)) {
+                        errors = { ...errors, error: 'Empty data' };
+                        updateFormErrorsAudio(errors);
+                    } else {
+                        setAudio(response.data.audios)
+                    }
                     const urls = {};
 
                     for (const audio of audioArray) {
@@ -67,10 +91,11 @@ export function Profile() {
                     }
 
                     setAudioUrls(urls);
+                }).catch((error) => {
+                    errors = { ...errors, error: "Something went wrong, please try again later" }
+                    updateFormErrorsAudio(errors);
                 });
-
         }
-
         fetchAudioUrls();
     }, [validate]);
 
@@ -102,16 +127,10 @@ export function Profile() {
                 <CardBody className="p-4">
                     <div className="mb-10 flex items-center justify-between gap-6">
                         <div className="flex items-center gap-6">
-                            <Avatar
-                                src="/img/team-3.jpeg"
-                                alt="bruce-mars"
-                                size="xl"
-                                className="rounded-lg shadow-lg shadow-blue-gray-500/40"
-                            />
+                            <img className="w-20 h-20" src="/img/user.jpg" alt="" srcset="" />
                             <div>
                                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                                    Ayechi Nour     {validate ? 'true' : "false"}
-
+                                    {userName}
                                 </Typography>
                             </div>
                         </div>
@@ -187,71 +206,88 @@ export function Profile() {
                         <Typography variant="h6" color="blue-gray" className="mb-3">
                             Articles
                         </Typography>
-                        <ul className="flex flex-col gap-6">
-                            {Article != null &&
-                                Article.map(({ id, subject, content }) => (
-                                   <><MessageCard
-                                        key={id}
-                                        name={subject}
-                                        message={content}
-                                        action={
-                                            <Button onClick={() => { handleVoice(id, subject, content) }} variant="text" size="sm">
-                                                convert
-                                            </Button>
-                                        }
-                                    />
-                                    {Success && <span>audio ok</span>}
-                                    </> 
+                        {(!_.isEmpty(formErrors["error"])) ?
+                            <div>
+                                <Alert
+                                    color="orange"
+                                    icon={
+                                        <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
+                                    }
+                                >
+                                    Until now, there's no non converted articles. Could you please add one?
+                                </Alert>
+                            </div>
+                            :
+                            <ul className="flex flex-col gap-6">
+                                {Article != null &&
+                                    Article.map(({ id, subject, content }) => (
+                                        <><MessageCard
+                                            key={id}
+                                            name={subject}
+                                            message={content}
+                                            action={
+                                                <Button onClick={() => { handleVoice(id, subject, content) }} variant="text" size="sm">
+                                                    convert
+                                                </Button>
+                                            }
+                                        />
+                                            {Success && <span>audio ok</span>}
+                                        </>
 
-                                ))}
-                        </ul>
-
+                                    ))}
+                            </ul>
+                        }
                     </div>
                     <div className="px-4 pb-4">
                         <Typography variant="h6" color="blue-gray" className="mb-2">
                             Audios
                         </Typography>
-
-                        {/* <ReactAudioPlayer
-                src="my_audio_file.ogg"
-                autoPlay
-                controls
-              /> */}
-
-                        <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-                            {Audio != null && audioUrls &&
-                                Audio.map(({ id, subject, url }) => (
-                                    <Card key={subject} color="transparent" shadow={false}>
-                                        <CardHeader
-                                            floated={false}
-                                            color="gray"
-                                            className="mx-0 mt-0 mb-4 h-64 xl:h-40"
-                                        >
-                                            <img
-                                                src={"/img/audio1.png"}
-                                                alt={subject}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        </CardHeader>
-                                        <CardBody className="py-0 px-1">
-                                            <Typography
-                                                variant="h5"
-                                                color="blue-gray"
-                                                className="mt-1 mb-2"
+                        {(!_.isEmpty(formErrorsAudio["error"])) ?
+                            <div>
+                                <Alert
+                                    color="orange"
+                                    icon={
+                                        <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
+                                    }
+                                >
+                                    Until now, no audios have been added. Could you please add one?
+                                </Alert>
+                            </div>
+                            :
+                            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
+                                {Audio != null && audioUrls &&
+                                    Audio.map(({ id, subject, url }) => (
+                                        <Card key={subject} color="transparent" shadow={false}>
+                                            <CardHeader
+                                                floated={false}
+                                                color="gray"
+                                                className="mx-0 mt-0 mb-4 h-64 xl:h-40"
                                             >
-                                                {subject}
-                                            </Typography>
-                                        </CardBody>
-                                        <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                                            <div>
-                                                <audio controls src={audioUrls[id]}></audio>
+                                                <img
+                                                    src={"/img/audio1.png"}
+                                                    alt={subject}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </CardHeader>
+                                            <CardBody className="py-0 px-1">
+                                                <Typography
+                                                    variant="h5"
+                                                    color="blue-gray"
+                                                    className="mt-1 mb-2"
+                                                >
+                                                    {subject}
+                                                </Typography>
+                                            </CardBody>
+                                            <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
+                                                <div>
+                                                    <audio controls src={audioUrls[id]}></audio>
 
-                                            </div>
-                                        </CardFooter>
-                                    </Card>
-                                )
-                                )}
-                        </div>
+                                                </div>
+                                            </CardFooter>
+                                        </Card>
+                                    )
+                                    )}
+                            </div>}
                     </div>
                 </CardBody>
             </Card>

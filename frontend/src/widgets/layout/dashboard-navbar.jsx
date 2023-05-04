@@ -25,19 +25,35 @@ import {
   setOpenConfigurator,
   setOpenSidenav,
 } from "@/context";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+  const Token = localStorage.getItem('token')
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    async function decodeToken() {
+      try {
+        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: Token })
+        setUserName(tokenDecoded.data.token.payload.nameUser)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    decodeToken();
+  }, []);
 
   return (
     <Navbar
       color={fixedNavbar ? "white" : "transparent"}
       className={`rounded-xl transition-all ${fixedNavbar
-          ? "sticky top-4 z-40 py-3 shadow-md shadow-blue-gray-500/5"
-          : "px-0 py-1"
+        ? "sticky top-4 z-40 py-3 shadow-md shadow-blue-gray-500/5"
+        : "px-0 py-1"
         }`}
       fullWidth
       blurred={fixedNavbar}
@@ -84,7 +100,7 @@ export function DashboardNavbar() {
             className="hidden items-center gap-1 px-4 xl:flex"
           >
             <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-            Ayechi Nour
+            {userName}
           </Button>
           <IconButton
             variant="text"

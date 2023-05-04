@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import {
   ChartPieIcon,
   UserIcon,
@@ -34,7 +34,7 @@ export function Auth() {
       icon: ArrowRightOnRectangleIcon,
     },
   ];
-
+  const navigate = useNavigate();
   useEffect(() => {
     // if token exist and liggein is true redirect to dashboard
     if ((localStorage.getItem("token") !== null) && (isLoggedIn)) {

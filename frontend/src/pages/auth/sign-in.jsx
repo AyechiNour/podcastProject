@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import React, { useContext, useRef,useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import axios from 'axios';
 import LoginContext from "@/context/loginContext";
 import _ from 'lodash';
@@ -21,7 +21,7 @@ export function SignIn() {
   const password = useRef(null)
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const  [formErrors, updateFormErrors] = useState({});
+  const [formErrors, updateFormErrors] = useState({});
   const validateEmail = (email) => email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
   const signin = () => {
@@ -33,22 +33,24 @@ export function SignIn() {
     if (_.isEmpty(passwordValue)) errors = { ...errors, password: 'Your password is required' };
     if ((_.isEmpty(emailValue)) || !validateEmail(emailValue)) errors = { ...errors, email: 'Invalid email' };
 
-
-
     updateFormErrors(errors);
 
-    if (!_.isEmpty(errors)) return; 
+    if (!_.isEmpty(errors)) return;
     const user = axios.post('http://localhost:3000/user/signIn', { email: emailValue, password: passwordValue })
     user.then((result) => {
       if (result.data.status) {
 
         localStorage.setItem('token', result.data.token)
         setIsLoggedIn(true)
-        navigate('/dashboard/profile');
+        navigate('/dashboard/home');
+      } else {
+        errors = { ...errors, error: result.data.errors }
+        updateFormErrors(errors);
       }
 
     }).catch((error) => {
-      console.log(error)
+      errors = { ...errors, error: "Something went wrong, please try again later" }
+      updateFormErrors(errors);
     })
   }
   const displayError = (key) => {
@@ -79,11 +81,10 @@ export function SignIn() {
 
             <Input type="password" label="Password" size="lg" ref={password} />
             {displayError('password')}
-
-            <div className="-ml-2.5">
-              <Checkbox label="Remember Me" />
-            </div>
+            {displayError("error")}
           </CardBody>
+
+
           <CardFooter className="pt-0">
             <Button variant="gradient" fullWidth onClick={() => { signin() }}>
               Sign In

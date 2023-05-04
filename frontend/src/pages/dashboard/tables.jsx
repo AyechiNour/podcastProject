@@ -9,41 +9,74 @@ import {
   Progress,
   Input,
   Button,
+  Alert,
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 import { Link } from "react-router-dom";
 import { MessageCard } from "@/widgets/cards";
 import axios from 'axios';
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useEffect } from "react";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import _ from "lodash";
 
 export function Tables() {
   const [validate, setvalidate] = useState(false)
   const refSubject = useRef(null)
   const contentRef = useRef(null)
-  const [value, setvalue] = useState("");
-  const [Article, setArticle] = useState(null);
-
+  const [value, setvalue] = useState("")
+  const [Article, setArticle] = useState(null)
   const Token = localStorage.getItem('token')
+  const [formErrors, updateFormErrors] = useState({});
+  const [content, setContent] = useState("");
+  const [text, setText] = useState(" ");
+  const [appear, setAppear] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      let errors = {};
       try {
         const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
-        setArticle(allArticles.data.articles)
+        if (_.isEmpty(allArticles.data.articles)) {
+          errors = { ...errors, error: 'Empty data' };
+          updateFormErrors(errors);
+        } else {
+          setArticle(allArticles.data.articles)
+        }
       } catch (error) {
-        console.log(error);
+        errors = { ...errors, error: "Something went wrong, please try again later" }
+        updateFormErrors(errors);
       }
     }
     fetchData()
   }, [validate]);
 
+  useEffect(() => {
+    let currentText = "";
+    let index = 0;
+
+    const intervalId = setInterval(() => {
+      currentText += text[index];
+      setContent(currentText);
+      index++;
+
+      if (index === text.length) {
+        clearInterval(intervalId);
+      }
+    }, 150);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [text]);
+
   const generateArticle = async () => {
     try {
+      setAppear(true)
       var subject = refSubject.current.getElementsByTagName('input')[0].value
       const content = await axios.post('http://localhost:3000/article/generateArticle', { subject: subject })
-      contentRef.current.innerHTML = content.data.articles
+      setText(content.data.articles)
       setvalue(content.data.articles)
     } catch (error) {
       console.log(error);
@@ -52,6 +85,7 @@ export function Tables() {
 
   const addArticle = async () => {
     try {
+      setAppear(false)
       let subject = refSubject.current.getElementsByTagName('input')[0].value
       const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, token: Token })
       setvalidate(!validate)
@@ -94,8 +128,11 @@ export function Tables() {
               </Button>
             </Link>
           </div>
-          <div className="w-full border h-52 rounded-md overflow-y-scroll">
-            <p ref={contentRef} className="p-3" ></p>
+          <div className="w-full border h-52 rounded-md overflow-y-scroll flex p-3">
+            <p className="" ref={contentRef} >{content}</p>
+            {appear &&
+              <p className="animate-pulse h-5 w-1 bg-black" ></p>
+            }
           </div>
           <div className="flex flex-row justify-end items-center">
             <Link className="mr-1 mt-3" onClick={() => { contentRef.current.innerHTML = ""; generateArticle() }}>
@@ -115,79 +152,93 @@ export function Tables() {
             Articles Table
           </Typography>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["subject", "content", "status", "date", ""].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+        {(!_.isEmpty(formErrors["error"])) ?
+          <div className="px-5 pb-5">
+            <Alert
+              color="orange"
+              icon={
+                <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
+              }
+            >
+              Until now, no articles have been added. Could you please add one?
+            </Alert>
+          </div>
+          :
+          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+            <table className="w-full min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["subject", "content", "status", "date", ""].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            {Article != null &&
-              <tbody>
-                {Article.map(
-                  ({ id, subject, content, status, createdAt }, key) => {
-                    const className = `py-3 px-5 ${key === Article.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                      }`;
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                      >
+                        {el}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {Article != null &&
+                <tbody>
+                  {Article.map(
+                    ({ id, subject, content, status, createdAt }, key) => {
+                      const className = `py-3 px-5 ${key === Article.length - 1
+                        ? ""
+                        : "border-b border-blue-gray-50"
+                        }`;
 
-                    return (
-                      <tr key={id}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <div>
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-semibold"
-                              >
-                                {subject}
-                              </Typography>
+                      return (
+                        <tr key={id}>
+                          <td className={className}>
+                            <div className="flex items-center gap-4">
+                              <div>
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-semibold"
+                                >
+                                  {subject}
+                                </Typography>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          <Typography className="text-xs font-normal text-blue-gray-500 h-10 w-96 flex items-center truncate" >
-                            {content}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <Chip
-                            variant="gradient"
-                            color={(status == 1) ? "green" : "blue-gray"}
-                            value={(status == 1) ? "converted" : "non-converted"}
-                            className="py-0.5 px-2 text-[11px] font-medium"
-                          />
-                        </td>
-                        <td className={className}>
-                          <Typography className="text-xs font-semibold text-blue-gray-600">
-                            {createdAt}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <Button variant="text" size="sm" onClick={() => { deleteArticle(id) }}>
-                            delete
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>}
-          </table>
-        </CardBody>
+                          </td>
+                          <td className={className}>
+                            <Typography className="text-xs font-normal text-blue-gray-500 h-10 w-96 flex items-center truncate" >
+                              {content}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Chip
+                              variant="gradient"
+                              color={(status == 1) ? "green" : "blue-gray"}
+                              value={(status == 1) ? "converted" : "non-converted"}
+                              className="py-0.5 px-2 text-[11px] font-medium"
+                            />
+                          </td>
+                          <td className={className}>
+                            <Typography className="text-xs font-semibold text-blue-gray-600">
+                              {createdAt}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Button variant="text" size="sm" onClick={() => { deleteArticle(id) }}>
+                              delete
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )}
+                </tbody>}
+            </table>
+          </CardBody>
+        }
+
       </Card>
       {/* <Card>
         <CardHeader variant="gradient" color="blue" className="mb-8 p-6">
