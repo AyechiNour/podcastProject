@@ -97,9 +97,7 @@ export function Profile() {
         await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
             .then((response) => {
                 if (response.data.status) {
-                    // window.location.reload()
                     setSuccess(true)
-                    console.log(update)
                 }
             })
             .catch((error) => {
@@ -123,75 +121,11 @@ export function Profile() {
                                 </Typography>
                             </div>
                         </div>
-                        {/* <div className="w-96">
-                <Tabs value="app">
-                  <TabsHeader>
-                    <Tab value="app">
-                      <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                      App
-                    </Tab>
-                    <Tab value="message">
-                      <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
-                      Message
-                    </Tab>
-                    <Tab value="settings">
-                      <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                      Settings
-                    </Tab>
-                  </TabsHeader>
-                </Tabs>
-              </div> */}
+                       
                     </div>
                     <div className="mb-12 px-4">
-                        {/* <div>
-                <Typography variant="h6" color="blue-gray" className="mb-3">
-                  Platform Settings
-                </Typography>
-                <div className="flex flex-col gap-12">
-                  {platformSettingsData.map(({ title, options }) => (
-                    <div key={title}>
-                      <Typography className="mb-4 block text-xs font-semibold uppercase text-blue-gray-500">
-                        {title}
-                      </Typography>
-                      <div className="flex flex-col gap-6">
-                        {options.map(({ checked, label }) => (
-                          <Switch
-                            key={label}
-                            id={label}
-                            label={label}
-                            defaultChecked={checked}
-                            labelProps={{
-                              className: "text-sm font-normal text-blue-gray-500",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div> */}
-                        {/* <ProfileInfoCard
-                title="Profile Information"
-                description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-                details={{
-                  "first name": "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
-                  social: (
-                    <div className="flex items-center gap-4">
-                      <i className="fa-brands fa-facebook text-blue-700" />
-                      <i className="fa-brands fa-twitter text-blue-400" />
-                      <i className="fa-brands fa-instagram text-purple-500" />
-                    </div>
-                  ),
-                }}
-                action={
-                  <Tooltip content="Edit Profile">
-                    <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
-                  </Tooltip>
-                }
-              /> */}
+                       
+                      
                         <Typography variant="h6" color="blue-gray" className="mb-3">
                             Articles
                         </Typography>

@@ -1,39 +1,13 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-import {
-  ChartPieIcon,
-  UserIcon,
-  UserPlusIcon,
-  ArrowRightOnRectangleIcon,
-} from "@heroicons/react/24/solid";
-import { Navbar, Footer } from "@/widgets/layout";
+
+import {  Footer } from "@/widgets/layout";
 import routes from "@/routes";
 import { useContext, useEffect } from "react";
 import LoginContext from "@/context/loginContext";
 
 export function Auth() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const navbarRoutes = [
-    {
-      name: "dashboard",
-      path: "/dashboard/home",
-      icon: ChartPieIcon,
-    },
-    {
-      name: "profile",
-      path: "/dashboard/home",
-      icon: UserIcon,
-    },
-    {
-      name: "sign up",
-      path: "/auth/sign-up",
-      icon: UserPlusIcon,
-    },
-    {
-      name: "sign out",
-      path: "/auth/sign-in",
-      icon: ArrowRightOnRectangleIcon,
-    },
-  ];
+  const { isLoggedIn } = useContext(LoginContext);
+
   const navigate = useNavigate();
   useEffect(() => {
     // if token exist and liggein is true redirect to dashboard
@@ -45,9 +19,7 @@ export function Auth() {
 
   return (
     <div className="relative min-h-screen w-full">
-      {/* <div className="container relative z-40 mx-auto p-4">
-        <Navbar routes={navbarRoutes} />
-      </div> */}
+   
       <Routes>
         {routes.map(
           ({ layout, pages }) =>
