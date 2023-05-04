@@ -1,6 +1,5 @@
 import {
   BanknotesIcon,
-  UserPlusIcon,
   UserIcon,
   ChartBarIcon,
 } from "@heroicons/react/24/solid";
@@ -28,17 +27,7 @@ export const statisticsCardsData = [
       label: "than last month",
     },
   },
-  // {
-  //   color: "green",
-  //   icon: UserPlusIcon,
-  //   title: "New Clients",
-  //   value: "3,462",
-  //   footer: {
-  //     color: "text-red-500",
-  //     value: "-2%",
-  //     label: "than yesterday",
-  //   },
-  // },
+
   {
     color: "orange",
     icon: ChartBarIcon,

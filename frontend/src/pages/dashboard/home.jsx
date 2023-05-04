@@ -4,35 +4,171 @@ import {
   Card,
   CardHeader,
   CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
   CardFooter,
-  Button,
+  Alert,
 } from "@material-tailwind/react";
 import {
-  ClockIcon,
-  CheckIcon,
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
-import { MessageCard, StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
-import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-  projectsData,
-  conversationsData,
-} from "@/data";
+  BanknotesIcon,
+  UserIcon,
+  ChartBarIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/solid";
+import {  StatisticsCard } from "@/widgets/cards";
+
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import _ from "lodash";
 
 export function Home() {
+  const [Article, setArticle] = useState(null);
+  const [Articles, setArticles] = useState(null);
+
+  const [audioUrls, setAudioUrls] = useState({});
+  const [Audio, setAudio] = useState(null);
+  const [Success, setSuccess] = useState(false);
+  const [formErrors, updateFormErrors] = useState({});
+  const Token = localStorage.getItem('token')
+  const [formErrorsAudio, updateFormErrorsAudio] = useState({});
+  const [userName, setUserName] = useState("");
+  const [update, setUpdate] = useState(false);
+
+  useEffect(() => {
+      async function decodeToken() {
+          try {
+              const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: Token })
+              setUserName(tokenDecoded.data.token.payload.nameUser)
+          } catch (error) {
+              console.log(error)
+          }
+      }
+      decodeToken();
+  }, []);
+
+  useEffect(() => {
+      let errors = {};
+      async function fetchData() {
+          let errors = {};
+          try {
+              const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
+              if (_.isEmpty(allArticles.data.articles)) {
+                  errors = { ...errors, error: 'Empty data' };
+                  updateFormErrors(errors);
+              } else {
+                  setArticle(allArticles.data.articles)
+                  console.log(Article)
+                  console.log(update)
+              }
+          } catch (error) {
+              errors = { ...errors, error: "Something went wrong, please try again later" }
+              updateFormErrors(errors);
+          }
+      }
+      fetchData()
+  }, [update]);
+
+  useEffect(() => {
+      let errors = {};
+      async function fetchAudioUrls() {
+          await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
+              .then(async response => {
+                  const audioArray = response.data.audios;
+                  if (_.isEmpty(audioArray)) {
+                      errors = { ...errors, error: 'Empty data' };
+                      updateFormErrorsAudio(errors);
+                  } else {
+                      setAudio(response.data.audios)
+                  }
+                  const urls = {};
+
+                  for (const audio of audioArray) {
+                      const response = await axios.get(`http://localhost:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
+                      const objectUrl = URL.createObjectURL(response.data);
+                      urls[audio.id] = objectUrl;
+                  }
+
+                  setAudioUrls(urls);
+              }).catch((error) => {
+                  errors = { ...errors, error: "Something went wrong, please try again later" }
+                  updateFormErrorsAudio(errors);
+              });
+      }
+      fetchAudioUrls();
+  }, [update]);
+
+  useEffect(() => {
+    async function fetchData() {
+      let errors = {};
+      try {
+        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
+        if (_.isEmpty(allArticles.data.articles)) {
+          errors = { ...errors, error: 'Empty data' };
+          updateFormErrors(errors);
+        } else {
+          setArticles(allArticles.data.articles)
+        }
+      } catch (error) {
+        errors = { ...errors, error: "Something went wrong, please try again later" }
+        updateFormErrors(errors);
+      }
+    }
+    fetchData()
+  }, []);
+
+  const handleVoice = async (id, subject, content) => {
+      setUpdate(!update);
+      setSuccess(false)
+      await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
+          .then((response) => {
+              if (response.data.status) {
+                  // window.location.reload()
+                  setSuccess(true)
+                  console.log(update)
+              }
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+  };
+
+
+  const statisticsCardsData = [
+    {
+      color: "blue",
+      icon: BanknotesIcon,
+      title: "Number of Articles",
+      value: Articles!=null?Articles.length:0,
+      footer: {
+        color: "text-green-500",
+        value: "+55%",
+        label: "than last week",
+      },
+    },
+    {
+      color: "pink",
+      icon: UserIcon,
+      title: "Non Converted",
+      value: Article!=null?Article.length:0,
+      footer: {
+        color: "text-green-500",
+        value: "+3%",
+        label: "than last month",
+      },
+    },
+  
+    {
+      color: "orange",
+      icon: ChartBarIcon,
+      title: "Number of Audio",
+      value: Audio!=null?Audio.length:0,
+      footer: {
+        color: "text-green-500",
+        value: "+5%",
+        label: "than yesterday",
+      },
+    },
+  ];
+  
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -53,50 +189,62 @@ export function Home() {
           />
         ))}
       </div>
-      <Card className="-mt-4 mb-6">
-        <CardBody className="p-4">
-        <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
-                ({ img, title, route, members }) => (
-                  <Card key={title} color="transparent" shadow={false}>
-                    <CardHeader
-                      floated={false}
-                      color="gray"
-                      className="mx-0 mt-0 mb-4 h-64 xl:h-40"
-                    >
-                      <img
-                        src={img}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
-                    </CardHeader>
-                    <CardBody className="py-0 px-1">
-                      <Typography
-                        variant="h5"
-                        color="blue-gray"
-                        className="mt-1 mb-2"
-                      >
-                        {title}
-                      </Typography>
-                    </CardBody>
-                    <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                      <div>
-                        <img src="/img/nivAudio1.jpg" alt="" srcSet="" />
-                        {/* <Button variant="outlined" size="sm">
-                          Start
-                        </Button>
-                        <Button variant="outlined" size="sm">
-                          Stop
-                        </Button> */}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                )
-              )}
-            </div>
-        </CardBody>
-      </Card>
-      
+      <Card className="mx-3 mt-16 mb-6 lg:mx-4">
+                <CardBody className="p-4">
+                
+              
+                    <div className="px-4 pb-4">
+                        <Typography variant="h6" color="blue-gray" className="mb-2">
+                            Audios
+                        </Typography>
+                        {(!_.isEmpty(formErrorsAudio["error"])) ?
+                            <div>
+                                <Alert
+                                    color="orange"
+                                    icon={
+                                        <InformationCircleIcon strokeWidth={2} className="h-6 w-6" />
+                                    }
+                                >
+                                    Until now, no audios have been added. Could you please add one?
+                                </Alert>
+                            </div>
+                            :
+                            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-2">
+                                {Audio != null && audioUrls &&
+                                    Audio.map(({ id, subject, url }) => (
+                                        <Card className="drop-shadow-md border p-4" key={subject} color="transparent" shadow={false}>
+                                            <CardHeader
+                                                floated={false}
+                                                color="gray"
+                                                className="mx-0 mt-0 mb-4 h-64 xl:h-40"
+                                            >
+                                                <img
+                                                    src={"/img/podcast1.jpg"}
+                                                    alt={subject}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </CardHeader>
+                                            <CardBody className="py-0 px-1">
+                                                <Typography
+                                                    variant="h5"
+                                                    color="blue-gray"
+                                                    className="mt-1 mb-2"
+                                                >
+                                                    {subject}
+                                                </Typography>
+                                            </CardBody>
+                                            <CardFooter className="mt-6 flex items-center justify-center py-0 px-1">
+                                                <div>
+                                                    <audio controls src={audioUrls[id]}></audio>
+                                                </div>
+                                            </CardFooter>
+                                        </Card>
+                                    )
+                                    )}
+                            </div>}
+                    </div>
+                </CardBody>
+            </Card>
       {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart

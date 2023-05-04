@@ -3,26 +3,16 @@ import {
     CardBody,
     CardHeader,
     CardFooter,
-    Avatar,
     Typography,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Switch,
-    Tooltip,
     Button,
     Alert,
 } from "@material-tailwind/react";
 import {
-    HomeIcon,
-    ChatBubbleLeftEllipsisIcon,
-    Cog6ToothIcon,
-    PencilIcon,
+
     InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
-import { platformSettingsData, conversationsData, projectsData } from "@/data";
+import { MessageCard } from "@/widgets/cards";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import _ from "lodash";
