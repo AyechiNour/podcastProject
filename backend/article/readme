@@ -1,0 +1,1 @@
+docker build . -t user_node_app:v1
