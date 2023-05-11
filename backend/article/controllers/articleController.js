@@ -252,12 +252,12 @@ exports.generateArticle = async (data) => {
         }
 
         //generate article
-        const prompt = `write an article about ${subject}`
+        const prompt = `write an article about ${subject} in french`
 
         const article = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: prompt,
-            max_tokens: 150,
+            max_tokens: 2048,
             temperature: 0.9
         })
 

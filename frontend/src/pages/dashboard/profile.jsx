@@ -98,6 +98,7 @@ export function Profile() {
             .then((response) => {
                 if (response.data.status) {
                     setSuccess(true)
+                    window.alert("L'article est bien converti en audio")
                 }
             })
             .catch((error) => {
