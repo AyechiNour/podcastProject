@@ -2,7 +2,7 @@
 const {
   Model
 } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelizeMetaUser, DataTypes) => {
   class metauser extends Model {
     /**
      * Helper method for defining associations.
@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      metauser.belongsTo(models.user, { foreignKey: 'idUser', onDelete: 'CASCADE', hooks: true });
     }
   }
   metauser.init({
@@ -24,8 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     metavalue: DataTypes.STRING,
     idUser: DataTypes.BIGINT(60)
   }, {
-    sequelize,
+    sequelize: sequelizeMetaUser,
     modelName: 'metauser',
   });
+
   return metauser;
 };

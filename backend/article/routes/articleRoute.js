@@ -61,6 +61,7 @@ articleRoute.post('/generateArticle',async (req,res,next)=>{
         res.status(400).json(error)
     }
 })
+
 articleRoute.post('/updateArticleStatus',async (req,res,next)=>{
     try {
         const result = await articleController.updateStatusArticle(req.body)

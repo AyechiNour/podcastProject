@@ -9,11 +9,22 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+const articleConfig = config.dbArticle;
+const convertedArticleConfig = config.dbConvertedArticle;
+
+let sequelizeArticle;
+let sequelizeConvertedArticle;
+
+if (articleConfig.use_env_variable) {
+  sequelizeArticle = new Sequelize(process.env[articleConfig.use_env_variable], articleConfig);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelizeArticle = new Sequelize(articleConfig.database, articleConfig.username, articleConfig.password, articleConfig);
+}
+
+if (convertedArticleConfig.use_env_variable) {
+  sequelizeConvertedArticle = new Sequelize(process.env[convertedArticleConfig.use_env_variable], convertedArticleConfig);
+} else {
+  sequelizeConvertedArticle = new Sequelize(convertedArticleConfig.database, convertedArticleConfig.username, convertedArticleConfig.password, convertedArticleConfig);
 }
 
 fs
@@ -27,17 +38,25 @@ fs
     );
   })
   .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+    if (file == "article.js") {
+      const model = require(path.join(__dirname, file))(sequelizeArticle, Sequelize.DataTypes);
+      db[model.name] = model;
+    } else {
+      const model = require(path.join(__dirname, file))(sequelizeConvertedArticle, Sequelize.DataTypes);
+      db[model.name] = model;
+    }
   });
 
 Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+  if (db[modelName].articledb && db[modelName].articledb.associate) {
+    db[modelName].articledb.associate(db[modelName].articledb);
+  }
+  if (db[modelName].convertedarticledb && db[modelName].convertedarticledb.associate) {
+    db[modelName].convertedarticledb.associate(db[modelName].convertedarticledb);
   }
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.sequelizeArticle = sequelizeArticle;
+db.sequelizeConvertedArticle = sequelizeConvertedArticle;
 
 module.exports = db;

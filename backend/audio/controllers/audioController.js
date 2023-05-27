@@ -40,7 +40,7 @@ exports.getAudio = async (data) => {
     }
 
     //get articles
-    const articles = await axios.post('http://localhost:3000/article/getArticle', { token: token })
+    const articles = await axios.post('http://localhost:3000/article/getConvertedArticle', { token: token })
     
     if (!articles) {
       return {
@@ -83,7 +83,7 @@ exports.addAudio = async (data) => {
 
   try {
     let errors = [];
-    const { id, subject, content } = data;
+    const { id, subject, content, token } = data;
 
     // Validate all the data coming through.
     if (_.isEmpty(subject)) errors = [...errors, "Please fill in your subject"];
@@ -124,7 +124,7 @@ exports.addAudio = async (data) => {
           };
         }
 
-        const response = await axios.post("http://localhost:3000/article/updateArticleStatus", { id: id });
+        const response = await axios.post("http://localhost:3000/article/updateArticleStatus", { id: id, token: token });
         if (response.data.status == false) {
           // await t.rollback(); // rollback the transaction
           return {

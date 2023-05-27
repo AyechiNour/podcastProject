@@ -47,7 +47,6 @@ exports.addArticle = async (data) => {
         //create new article
         const article = await Models.Article.create({ subject: subject, content: content, status: false, idUser: idUser });
 
-        console.log("article's auto-generated ID:", article.id);
         if (!article) {
             return {
                 status: false,
@@ -276,14 +275,14 @@ exports.generateArticle = async (data) => {
 
 }
 
-
 exports.updateStatusArticle = async (data) => {
     try {
         let errors = [];
 
         let { id } = data;
-        //Validate all the data coming through.
+        const token = data.token;
 
+        //Validate all the data coming through.
         if (_.isNaN(id)) errors = [...errors, "Please fill in your id"];
 
         if (!_.isEmpty(errors)) {
@@ -293,6 +292,22 @@ exports.updateStatusArticle = async (data) => {
                 errors: errors,
             };
         }
+
+        //get article
+        const convertedArticle = await Models.Article.findAll({
+            where: {
+                id: id
+            }
+        });
+
+        //delete article
+        const articles = await Models.Article.destroy({
+            where: {
+                id: id
+            }
+        });
+
+        await axios.post('http://localhost:3000/article/addConvertedArticle', { subject: convertedArticle[0].dataValues.subject, content:convertedArticle[0].dataValues.content ,token:token })
 
         //verify if articleId exist
         const article = await Models.Article.update({
@@ -321,4 +336,3 @@ exports.updateStatusArticle = async (data) => {
         };
     }
 }
-

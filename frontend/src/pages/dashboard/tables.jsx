@@ -22,8 +22,10 @@ export function Tables() {
   const contentRef = useRef(null)
   const [value, setvalue] = useState("")
   const [Article, setArticle] = useState(null)
+  const [convertedArticle, setConvertedArticle] = useState(null)
   const Token = localStorage.getItem('token')
   const [formErrors, updateFormErrors] = useState({});
+  const [convertedFormErrors, updateConvertedFormErrors] = useState({});
   const [content, setContent] = useState("");
   const [text, setText] = useState(" ");
   const [appear, setAppear] = useState(false);
@@ -31,6 +33,7 @@ export function Tables() {
   useEffect(() => {
     async function fetchData() {
       let errors = {};
+      let convertedErrors = {};
       try {
         const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
         if (_.isEmpty(allArticles.data.articles)) {
@@ -39,9 +42,18 @@ export function Tables() {
         } else {
           setArticle(allArticles.data.articles)
         }
+        const allConvertedArticles = await axios.post('http://localhost:3000/article/getConvertedArticle', { token: Token })
+        if (_.isEmpty(allConvertedArticles.data.articles)) {
+          convertedErrors = { ...convertedErrors, error: 'Empty data' };
+          console.log("---------------------------------------")
+          updateConvertedFormErrors(convertedErrors);
+        } else {
+          setConvertedArticle(allConvertedArticles.data.articles)
+        }
       } catch (error) {
         errors = { ...errors, error: "Something went wrong, please try again later" }
         updateFormErrors(errors);
+        updateConvertedFormErrors(convertedErrors);
       }
     }
     fetchData()
@@ -71,12 +83,9 @@ export function Tables() {
       setAppear(true)
       var subject = refSubject.current.getElementsByTagName('input')[0].value
       const content = await axios.post('http://localhost:3000/article/generateArticle', { subject: subject })
-      console.log(content)
       setText(content.data.articles)
       setvalue(content.data.articles)
       setAppear(false)
-      // setText("L'univers est un lieu mystérieux et fascinant, rempli de phénomènes étranges et de questions sans réponse. Malgré des avancées considérables en astronomie et en physique, il reste encore beaucoup à découvrir sur l'univers et ses mystères.L'un des mystères les plus intrigants de l'univers est la question de la matière noire. Les scientifiques ont observé que la matière visible ne représente qu'une infime partie de la matière totale de l'univers, ce qui suggère l'existence d'une forme de matière invisible, la matière noire. Bien que les scientifiques aient des preuves indirectes de l'existence de la matière noire, ils ne savent pas encore exactement ce qu'elle est ni comment elle fonctionne.Un autre mystère de l'univers est la question de l'énergie noire. L'énergie noire est une forme d'énergie qui est censée être responsable de l'expansion accélérée de l'univers. Les scientifiques ne savent pas encore ce qu'est exactement l'énergie noire, mais ils pensent qu'elle représente environ 70% de l'univers.Un troisième mystère de l'univers est la question de l'origine de la vie et de son évolution dans l'univers. Les scientifiques ont découvert des milliers de planètes en dehors de notre système solaire qui pourraient être potentiellement habitables, mais ils ne savent pas encore comment la vie est apparue et s'est développée sur Terre, ni si elle s'est développée de la même manière ailleurs dans l'univers.Un autre mystère de l'univers est la question des trous noirs. Les trous noirs sont des zones de l'espace où la gravité est si intense que rien ne peut s'échapper, pas même la lumière. Les scientifiques cherchent encore à comprendre comment les trous noirs se forment, comment ils évoluent et comment ils affectent l'univers.En somme, l'univers est rempli de mystères et de questions sans réponse. Les scientifiques continuent de chercher des réponses à ces questions en utilisant des télescopes de pointe, des simulations informatiques et des expériences en laboratoire. Avec des avancées technologiques continues et une recherche scientifique accrue, nous pouvons espérer résoudre certains de ces mystères de l'univers à l'avenir.")
-      // setvalue("L'univers est un lieu mystérieux et fascinant, rempli de phénomènes étranges et de questions sans réponse. Malgré des avancées considérables en astronomie et en physique, il reste encore beaucoup à découvrir sur l'univers et ses mystères.L'un des mystères les plus intrigants de l'univers est la question de la matière noire. Les scientifiques ont observé que la matière visible ne représente qu'une infime partie de la matière totale de l'univers, ce qui suggère l'existence d'une forme de matière invisible, la matière noire. Bien que les scientifiques aient des preuves indirectes de l'existence de la matière noire, ils ne savent pas encore exactement ce qu'elle est ni comment elle fonctionne.Un autre mystère de l'univers est la question de l'énergie noire. L'énergie noire est une forme d'énergie qui est censée être responsable de l'expansion accélérée de l'univers. Les scientifiques ne savent pas encore ce qu'est exactement l'énergie noire, mais ils pensent qu'elle représente environ 70% de l'univers.Un troisième mystère de l'univers est la question de l'origine de la vie et de son évolution dans l'univers. Les scientifiques ont découvert des milliers de planètes en dehors de notre système solaire qui pourraient être potentiellement habitables, mais ils ne savent pas encore comment la vie est apparue et s'est développée sur Terre, ni si elle s'est développée de la même manière ailleurs dans l'univers.Un autre mystère de l'univers est la question des trous noirs. Les trous noirs sont des zones de l'espace où la gravité est si intense que rien ne peut s'échapper, pas même la lumière. Les scientifiques cherchent encore à comprendre comment les trous noirs se forment, comment ils évoluent et comment ils affectent l'univers.En somme, l'univers est rempli de mystères et de questions sans réponse. Les scientifiques continuent de chercher des réponses à ces questions en utilisant des télescopes de pointe, des simulations informatiques et des expériences en laboratoire. Avec des avancées technologiques continues et une recherche scientifique accrue, nous pouvons espérer résoudre certains de ces mystères de l'univers à l'avenir.")
     } catch (error) {
       console.log(error);
     }
@@ -98,6 +107,15 @@ export function Tables() {
   const deleteArticle = async (id) => {
     try {
       const deleteResult = await axios.post('http://localhost:3000/article/deleteArticle', { id: id })
+      setvalidate(!validate)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const deleteConvertedArticle = async (id) => {
+    try {
+      const deleteResult = await axios.post('http://localhost:3000/article/deleteConvertedArticle', { id: id })
       setvalidate(!validate)
     } catch (error) {
       console.log(error)
@@ -151,7 +169,7 @@ export function Tables() {
             Articles Table
           </Typography>
         </CardHeader>
-        {(!_.isEmpty(formErrors["error"])) ?
+        {(!_.isEmpty(formErrors["error"])&&(!_.isEmpty(convertedFormErrors["error"]))) ?
           <div className="px-5 pb-5">
             <Alert
               color="orange"
@@ -190,7 +208,6 @@ export function Tables() {
                         ? ""
                         : "border-b border-blue-gray-50"
                         }`;
-
                       return (
                         <tr key={id}>
                           <td className={className}>
@@ -234,12 +251,62 @@ export function Tables() {
                     }
                   )}
                 </tbody>}
+              {convertedArticle != null &&
+                <tbody>
+                  {convertedArticle.map(
+                    ({ id, subject, content, status, createdAt }, key) => {
+                      const className = `py-3 px-5 ${key === convertedArticle.length - 1
+                        ? ""
+                        : "border-b border-blue-gray-50"
+                        }`;
+                      return (
+                        <tr key={id}>
+                          <td className={className}>
+                            <div className="flex items-center gap-4">
+                              <div>
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-semibold"
+                                >
+                                  {subject}
+                                </Typography>
+                              </div>
+                            </div>
+                          </td>
+                          <td className={className}>
+                            <Typography className="text-xs font-normal text-blue-gray-500 h-10 w-96 flex items-center truncate" >
+                              {content}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Chip
+                              variant="gradient"
+                              color={(status == 1) ? "green" : "blue-gray"}
+                              value={(status == 1) ? "converted" : "non-converted"}
+                              className="py-0.5 px-2 text-[11px] font-medium"
+                            />
+                          </td>
+                          <td className={className}>
+                            <Typography className="text-xs font-semibold text-blue-gray-600">
+                              {createdAt}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Button variant="text" size="sm" onClick={() => { deleteConvertedArticle(id) }}>
+                              delete
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )}
+                </tbody>
+              }
             </table>
           </CardBody>
         }
-
       </Card>
-    
     </div>
   );
 }

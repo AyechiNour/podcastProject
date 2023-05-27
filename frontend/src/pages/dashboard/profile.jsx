@@ -8,7 +8,6 @@ import {
     Alert,
 } from "@material-tailwind/react";
 import {
-
     InformationCircleIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
@@ -40,65 +39,69 @@ export function Profile() {
         decodeToken();
     }, []);
 
-    useEffect(() => {
+    async function fetchData() {
         let errors = {};
-        async function fetchData() {
-            let errors = {};
-            try {
-                const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
-                if (_.isEmpty(allArticles.data.articles)) {
-                    errors = { ...errors, error: 'Empty data' };
-                    updateFormErrors(errors);
-                } else {
-                    setArticle(allArticles.data.articles)
-                    console.log(Article)
-                    console.log(update)
-                }
-            } catch (error) {
-                errors = { ...errors, error: "Something went wrong, please try again later" }
+        try {
+            const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
+            if (_.isEmpty(allArticles.data.articles)) {
+                errors = { ...errors, error: 'Empty data' };
                 updateFormErrors(errors);
+            } else {
+                setArticle(allArticles.data.articles)
+                console.log(Article)
+                console.log(update)
             }
+        } catch (error) {
+            errors = { ...errors, error: "Something went wrong, please try again later" }
+            updateFormErrors(errors);
         }
+    }
+
+    async function fetchAudioUrls() {
+        let errors = {};
+        await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
+            .then(async response => {
+                const audioArray = response.data.audios;
+                console.log(audioArray)
+                if (_.isEmpty(audioArray)) {
+                    errors = { ...errors, error: 'Empty data' };
+                    updateFormErrorsAudio(errors);
+                } else {
+                    setAudio(response.data.audios)
+                }
+                const urls = {};
+
+                for (const audio of audioArray) {
+                    const response = await axios.get(`http://localhost:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
+                    const objectUrl = URL.createObjectURL(response.data);
+                    urls[audio.id] = objectUrl;
+                }
+
+                setAudioUrls(urls);
+            }).catch((error) => {
+                errors = { ...errors, error: "Something went wrong, please try again later" }
+                updateFormErrorsAudio(errors);
+            });
+    }
+
+    useEffect(() => {
         fetchData()
     }, [update]);
 
     useEffect(() => {
-        let errors = {};
-        async function fetchAudioUrls() {
-            await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
-                .then(async response => {
-                    const audioArray = response.data.audios;
-                    if (_.isEmpty(audioArray)) {
-                        errors = { ...errors, error: 'Empty data' };
-                        updateFormErrorsAudio(errors);
-                    } else {
-                        setAudio(response.data.audios)
-                    }
-                    const urls = {};
-
-                    for (const audio of audioArray) {
-                        const response = await axios.get(`http://localhost:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
-                        const objectUrl = URL.createObjectURL(response.data);
-                        urls[audio.id] = objectUrl;
-                    }
-
-                    setAudioUrls(urls);
-                }).catch((error) => {
-                    errors = { ...errors, error: "Something went wrong, please try again later" }
-                    updateFormErrorsAudio(errors);
-                });
-        }
         fetchAudioUrls();
     }, [update]);
 
     const handleVoice = async (id, subject, content) => {
         setUpdate(!update);
         setSuccess(false)
-        await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content })
+        await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content, token: Token })
             .then((response) => {
                 if (response.data.status) {
                     setSuccess(true)
                     window.alert("L'article est bien converti en audio")
+                    fetchAudioUrls()
+                    fetchData()
                 }
             })
             .catch((error) => {
@@ -115,18 +118,18 @@ export function Profile() {
                 <CardBody className="p-4">
                     <div className="mb-10 flex items-center justify-between gap-6">
                         <div className="flex items-center gap-6">
-                            <img className="w-20 h-20" src="/img/user.jpg" alt="" srcset="" />
+                            <img className="w-20 h-20" src="/img/user.jpg" alt="" srcSet="" />
                             <div>
                                 <Typography variant="h5" color="blue-gray" className="mb-1">
                                     {userName}
                                 </Typography>
                             </div>
                         </div>
-                       
+
                     </div>
                     <div className="mb-12 px-4">
-                       
-                      
+
+
                         <Typography variant="h6" color="blue-gray" className="mb-3">
                             Articles
                         </Typography>
@@ -153,7 +156,7 @@ export function Profile() {
                                                 message={content}
                                             />
                                             <Link className="ml-2" >
-                                                <Button variant="outlined" size="sm" onClick={() => { handleVoice(id, subject, content)}}>
+                                                <Button variant="outlined" size="sm" onClick={() => { handleVoice(id, subject, content) }}>
                                                     Convert
                                                 </Button>
                                             </Link>
