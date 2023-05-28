@@ -13,6 +13,8 @@ module.exports = (sequelizeUser, DataTypes) => {
   }
   user.init({
     id: {
+      
+      //corrected the typos
       type: DataTypes.BIGINT(60),
       autoIncrement: true,
       primaryKey: true
