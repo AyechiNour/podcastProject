@@ -93,7 +93,7 @@ exports.signIn = async (data) => {
                         idUser: coordCorrect.dataValues.id
                     });
         
-                    const response = await axios.post('http://localhost:3000/authorisation/getToken', { id: coordCorrect.dataValues.id, name: userMeta.dataValues.metavalue });
+                    const response = await axios.post('http://podcastproject-gateway-1:3000/authorisation/getToken', { id: coordCorrect.dataValues.id, name: userMeta.dataValues.metavalue });
         
                     if (response.data.status == false) {
                         errors = [...errors, "Problem with Token"];
@@ -160,7 +160,7 @@ exports.signUp = async (data) => {
         const hash = await bcrypt.hash(password, saltRounds);
         const user = await Models.user.create({ email: email, password: hash });
         const metaUser = await Models.metauser.create({ metakey: "name", metavalue: name, idUser: user.dataValues.id });
-        const response = await axios.post('http://localhost:3000/authorisation/getToken', { id: user.dataValues.id, name: name });
+        const response = await axios.post('http://podcastproject-gateway-1:3000/authorisation/getToken', { id: user.dataValues.id, name: name });
   
         if (response.data.status == false) {
           errors = [...errors, "Problem with Token"];

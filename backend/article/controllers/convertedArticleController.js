@@ -19,7 +19,7 @@ exports.addConvertedArticle = async (data) => {
         if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
 
         //decodeToken
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
         if (!tokenDecoded) {
             return {
                 status: false,
@@ -78,7 +78,7 @@ exports.getConvertedArticle = async (data) => {
         }
 
         //decodeToken
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
         if (!tokenDecoded) {
             return {
                 status: false,

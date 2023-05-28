@@ -31,7 +31,7 @@ exports.getAudio = async (data) => {
     }
 
     //decodeToken
-    const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+    const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
     if (!tokenDecoded) {
       return {
         status: false,
@@ -40,7 +40,7 @@ exports.getAudio = async (data) => {
     }
 
     //get articles
-    const articles = await axios.post('http://localhost:3000/article/getConvertedArticle', { token: token })
+    const articles = await axios.post('http://podcastproject-gateway-1:3000/article/getConvertedArticle', { token: token })
     
     if (!articles) {
       return {
@@ -90,7 +90,7 @@ exports.addAudio = async (data) => {
     if (_.isEmpty(content)) errors = [...errors, "Please wait until we finish the content"];
 
     // Verify if idArticle exist
-    const response = await axios.post("http://localhost:3000/article/verifArticle", { id: id });
+    const response = await axios.post("http://podcastproject-gateway-1:3000/article/verifArticle", { id: id });
     if (response.data.status == false) errors = [...errors, "This id didn't exist"];
 
     if (!_.isEmpty(errors)) {
@@ -124,7 +124,7 @@ exports.addAudio = async (data) => {
           };
         }
 
-        const response = await axios.post("http://localhost:3000/article/updateArticleStatus", { id: id, token: token });
+        const response = await axios.post("http://podcastproject-gateway-1:3000/article/updateArticleStatus", { id: id, token: token });
         if (response.data.status == false) {
           // await t.rollback(); // rollback the transaction
           return {

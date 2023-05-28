@@ -39,7 +39,7 @@ export function DashboardNavbar() {
   useEffect(() => {
     async function decodeToken() {
       try {
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: Token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: Token })
         setUserName(tokenDecoded.data.token.payload.nameUser)
       } catch (error) {
         console.log(error)

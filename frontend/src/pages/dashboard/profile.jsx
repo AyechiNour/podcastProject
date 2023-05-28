@@ -30,7 +30,7 @@ export function Profile() {
     useEffect(() => {
         async function decodeToken() {
             try {
-                const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: Token })
+                const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: Token })
                 setUserName(tokenDecoded.data.token.payload.nameUser)
             } catch (error) {
                 console.log(error)
@@ -42,7 +42,7 @@ export function Profile() {
     async function fetchData() {
         let errors = {};
         try {
-            const allArticles = await axios.post('http://localhost:3000/article/getArticleNonConverted', { token: Token })
+            const allArticles = await axios.post('http://podcastproject-gateway-1:3000/article/getArticleNonConverted', { token: Token })
             if (_.isEmpty(allArticles.data.articles)) {
                 errors = { ...errors, error: 'Empty data' };
                 updateFormErrors(errors);
@@ -59,7 +59,7 @@ export function Profile() {
 
     async function fetchAudioUrls() {
         let errors = {};
-        await axios.post('http://localhost:3000/audio/getAudio', { token: Token })
+        await axios.post('http://podcastproject-gateway-1:3000/audio/getAudio', { token: Token })
             .then(async response => {
                 const audioArray = response.data.audios;
                 console.log(audioArray)
@@ -72,7 +72,7 @@ export function Profile() {
                 const urls = {};
 
                 for (const audio of audioArray) {
-                    const response = await axios.get(`http://localhost:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
+                    const response = await axios.get(`http://podcastproject-gateway-1:3000/audio/uploads/${audio.url}`, { responseType: 'blob' });
                     const objectUrl = URL.createObjectURL(response.data);
                     urls[audio.id] = objectUrl;
                 }
@@ -95,7 +95,7 @@ export function Profile() {
     const handleVoice = async (id, subject, content) => {
         setUpdate(!update);
         setSuccess(false)
-        await axios.post("http://localhost:3000/audio/addAudio", { id: id, subject: subject, content: content, token: Token })
+        await axios.post("http://podcastproject-gateway-1:3000/audio/addAudio", { id: id, subject: subject, content: content, token: Token })
             .then((response) => {
                 if (response.data.status) {
                     setSuccess(true)

@@ -26,7 +26,7 @@ exports.addArticle = async (data) => {
         if (_.isEmpty(token)) errors = [...errors, "Please fill in your token"];
 
         //decodeToken
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
         if (!tokenDecoded) {
             return {
                 status: false,
@@ -85,7 +85,7 @@ exports.getArticle = async (data) => {
         }
 
         //decodeToken
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
         if (!tokenDecoded) {
             return {
                 status: false,
@@ -131,7 +131,7 @@ exports.getArticleNonConverted = async (data) => {
         }
 
         //decodeToken
-        const tokenDecoded = await axios.post('http://localhost:3000/authorisation/decodeToken', { tokenUser: token })
+        const tokenDecoded = await axios.post('http://podcastproject-gateway-1:3000/authorisation/decodeToken', { tokenUser: token })
 
         if (!tokenDecoded) {
             return {
@@ -307,7 +307,7 @@ exports.updateStatusArticle = async (data) => {
             }
         });
 
-        await axios.post('http://localhost:3000/article/addConvertedArticle', { subject: convertedArticle[0].dataValues.subject, content:convertedArticle[0].dataValues.content ,token:token })
+        await axios.post('http://podcastproject-gateway-1:3000/article/addConvertedArticle', { subject: convertedArticle[0].dataValues.subject, content:convertedArticle[0].dataValues.content ,token:token })
 
         //verify if articleId exist
         const article = await Models.Article.update({

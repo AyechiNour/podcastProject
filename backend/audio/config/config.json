@@ -3,21 +3,21 @@
     "username": "root",
     "password": "password",
     "database": "audiodb",
-    "host": "172.17.0.2",
+    "host": "podcastproject-database-1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": "password",
     "database": "audiodb",
-    "host": "172.17.0.2",
+    "host": "podcastproject-database-1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": "password",
     "database": "audiodb",
-    "host": "172.17.0.2",
+    "host": "podcastproject-database-1",
     "dialect": "mysql"
   }
 }

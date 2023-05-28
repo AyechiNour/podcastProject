@@ -4,14 +4,14 @@
       "username": "root",
       "password": "password",
       "database": "userdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
       "password": "password",
       "database": "metauserdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     }
   },
@@ -20,14 +20,14 @@
       "username": "root",
       "password": "password",
       "database": "userdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
       "password": "password",
       "database": "metauserdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     }
   },
@@ -36,14 +36,14 @@
       "username": "root",
       "password": "password",
       "database": "userdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
       "password": "password",
       "database": "metauserdb",
-      "host": "172.17.0.2",
+      "host": "podcastproject-database-1",
       "dialect": "mysql"
     }
   }

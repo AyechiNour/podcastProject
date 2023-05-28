@@ -35,14 +35,14 @@ export function Tables() {
       let errors = {};
       let convertedErrors = {};
       try {
-        const allArticles = await axios.post('http://localhost:3000/article/getArticle', { token: Token })
+        const allArticles = await axios.post('http://podcastproject-gateway-1:3000/article/getArticle', { token: Token })
         if (_.isEmpty(allArticles.data.articles)) {
           errors = { ...errors, error: 'Empty data' };
           updateFormErrors(errors);
         } else {
           setArticle(allArticles.data.articles)
         }
-        const allConvertedArticles = await axios.post('http://localhost:3000/article/getConvertedArticle', { token: Token })
+        const allConvertedArticles = await axios.post('http://podcastproject-gateway-1:3000/article/getConvertedArticle', { token: Token })
         if (_.isEmpty(allConvertedArticles.data.articles)) {
           convertedErrors = { ...convertedErrors, error: 'Empty data' };
           console.log("---------------------------------------")
@@ -82,7 +82,7 @@ export function Tables() {
     try {
       setAppear(true)
       var subject = refSubject.current.getElementsByTagName('input')[0].value
-      const content = await axios.post('http://localhost:3000/article/generateArticle', { subject: subject })
+      const content = await axios.post('http://podcastproject-gateway-1:3000/article/generateArticle', { subject: subject })
       setText(content.data.articles)
       setvalue(content.data.articles)
       setAppear(false)
@@ -95,7 +95,7 @@ export function Tables() {
     try {
       setAppear(false)
       let subject = refSubject.current.getElementsByTagName('input')[0].value
-      const result = await axios.post('http://localhost:3000/article/addArticle', { subject: subject, content: value, token: Token })
+      const result = await axios.post('http://podcastproject-gateway-1:3000/article/addArticle', { subject: subject, content: value, token: Token })
       setvalidate(!validate)
       refSubject.current.getElementsByTagName('input')[0].value = ""
       contentRef.current.innerHTML = ""
@@ -106,7 +106,7 @@ export function Tables() {
 
   const deleteArticle = async (id) => {
     try {
-      const deleteResult = await axios.post('http://localhost:3000/article/deleteArticle', { id: id })
+      const deleteResult = await axios.post('http://podcastproject-gateway-1:3000/article/deleteArticle', { id: id })
       setvalidate(!validate)
     } catch (error) {
       console.log(error)
@@ -115,7 +115,7 @@ export function Tables() {
 
   const deleteConvertedArticle = async (id) => {
     try {
-      const deleteResult = await axios.post('http://localhost:3000/article/deleteConvertedArticle', { id: id })
+      const deleteResult = await axios.post('http://podcastproject-gateway-1:3000/article/deleteConvertedArticle', { id: id })
       setvalidate(!validate)
     } catch (error) {
       console.log(error)
