@@ -9,7 +9,7 @@ export function Footer({ brandName, brandLink, routes }) {
     <footer className="py-2">
       <div className="flex w-full flex-wrap items-center justify-center gap-6 px-2 md:justify-between">
         <Typography variant="small" className="font-normal text-inherit flex w-full flex-wrap items-center justify-center">
-          &copy; {year}, made by Ayechi Nour & Hamdi Boutheina
+          &copy; {year}, made by Ayechi Nour & Youssef Saidi & Wassef Chebbi 
         </Typography>
       </div>
     </footer>

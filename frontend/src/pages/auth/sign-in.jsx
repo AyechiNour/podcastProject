@@ -35,7 +35,7 @@ export function SignIn() {
     updateFormErrors(errors);
 
     if (!_.isEmpty(errors)) return;
-    const user = axios.post('http://podcastproject-gateway-1:3000/user/signIn', { email: emailValue, password: passwordValue })
+    const user = axios.post('http://localhost:3000/user/signIn', { email: emailValue, password: passwordValue })
     user.then((result) => {
       if (result.data.status) {
 

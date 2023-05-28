@@ -41,7 +41,7 @@ export function SignUp() {
     updateFormErrors(errors);
 
     if (!_.isEmpty(errors)) return;
-    const user = axios.post('http://podcastproject-gateway-1:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
+    const user = axios.post('http://localhost:3000/user/signUp', { name: userName, email: userEmail, password: userPassword })
     user.then((result) => {
       if (result.data.status) {
         localStorage.setItem('token', result.data.token)
