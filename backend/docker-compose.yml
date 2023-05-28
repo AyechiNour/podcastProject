@@ -1,5 +1,3 @@
-   
-
 version: '3'
 services:
   article:
@@ -9,8 +7,7 @@ services:
     depends_on:
       - database       
     networks:
-      - mynetwork
-
+      - mynetworks
 
   audio:
     image: audio_node_app
@@ -19,7 +16,7 @@ services:
     depends_on:
       - database       
     networks:
-      - mynetwork   
+      - mynetworks   
 
   user:
     image: user_node_app
@@ -28,35 +25,120 @@ services:
     depends_on:
       - database  
     networks:
-      - mynetwork 
-
+      - mynetworks 
 
   token:
     image: token_node_app
     ports:
       - 3004:3004
     networks:
-      - mynetwork 
+      - mynetworks 
 
   gateway:
     image: gateway_node_app
     ports:
       - 3000:3000
     networks:
-      - mynetwork       
+      - mynetworks       
 
   database:
     image: mysql
-
     ports:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=root
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=articledb
+      - DB_HOST=database
     networks:
-      - mynetwork
+      - mynetworks
+
+networks:
+  mynetworks:
+
+
+   
+
+# version: '3'
+# services:
+#   article:
+#     image: article_node_app
+#     ports:
+#       - 3002:3002
+#     depends_on:
+#       - database       
+#     networks:
+#       - mynetworks
+
+
+#   audio:
+#     image: audio_node_app
+#     ports:
+#       - 3003:3003
+#     depends_on:
+#       - database       
+#     networks:
+#       -mynetworks  
+
+#   user:
+#     image: user_node_app
+#     ports:
+#       - 3001:3001
+#     depends_on:
+#       - database  
+#     networks:
+#       -mynetworks
+
+
+#   token:
+#     image: token_node_app
+#     ports:
+#       - 3004:3004
+#     networks:
+#       -mynetworks
+
+#   gateway:
+#     image: gateway_node_app
+#     ports:
+#       - 3000:3000
+#     networks:
+#       -mynetworks
+
+
+#   database:
+#     container_name: flask_mysql
+#     restart: always
+#     image: mysql:5.6
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=root # TODO: Change this
+#       - DB_USERNAME=root
+#       - DB_PASSWORD=
+#       - DB_NAME=articledb
+#       - DB_HOST=172.17.0.2
+#     volumes:
+#     - ./data:/var/lib/mysql
+#     ports:
+#     - "<externalEnvIp>:3036:3306"
+#     restart: always
+#     networks:
+#       -mynetworks
+
+
+#   mynetworks:
+      
+#     inner:
+#       driver: bridge
+#       driver_opts:
+#         com.docker.network.enable_ipv6: "true"
+#         com.docker.network.bridge.enable_ip_masquerade: "true"
+#       ipam:
+#         driver: default
+
     
 
 
-networks:
-  mynetwork:
+# networks:
+#   mynetworks:
+
+

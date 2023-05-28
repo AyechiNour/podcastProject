@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "7800:7800"
+    depends_on:
+      - database
+    networks:
+      - frontend-network
+      - backend-network
+  article:
+    build: ./backend/article
+    command: npm start
+    ports:
+      - 3002:3002
+    depends_on:
+      - database       
+    networks:
+      - backend-network
+
+  audio:
+    build: ./backend/audio
+    command: npm start
+    ports:
+      - 3003:3003
+    depends_on:
+      - database       
+    networks:
+      - backend-network   
+
+  user:
+    build: ./backend/user
+    command: npm start
+    ports:
+      - 3001:3001
+    depends_on:
+      - database  
+    networks:
+      - backend-network 
+
+  token:
+    build: ./backend/token
+    command: npm start
+    ports:
+      - 3004:3004
+    networks:
+      - backend-network 
+
+  gateway:
+    build: ./backend/gateway
+    command: npm start
+    ports:
+      - 3000:3000
+    networks:
+      - backend-network       
+
+  database:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=articledb
+      - DB_HOST=database
+    networks:
+      - backend-network
+
+networks:
+  frontend-network:
+  backend-network:
