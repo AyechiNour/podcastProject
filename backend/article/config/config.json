@@ -2,48 +2,48 @@
   "development": {
     "dbArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "articledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbConvertedArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "convertedarticledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   },
   "test": {
     "dbArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "articledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbConvertedArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "convertedarticledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   },
   "production": {
     "dbArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "articledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbConvertedArticle": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "convertedarticledb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   }

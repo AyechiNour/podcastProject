@@ -1,23 +1,23 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "password",
     "database": "audiodb",
-    "host": "127.0.0.1",
+    "host": "172.17.0.2",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": null,
+    "password": "password",
     "database": "audiodb",
-    "host": "127.0.0.1",
+    "host": "172.17.0.2",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": null,
+    "password": "password",
     "database": "audiodb",
-    "host": "127.0.0.1",
+    "host": "172.17.0.2",
     "dialect": "mysql"
   }
 }

@@ -1,0 +1,62 @@
+   
+
+version: '3'
+services:
+  article:
+    image: article_node_app
+    ports:
+      - 3002:3002
+    depends_on:
+      - database       
+    networks:
+      - mynetwork
+
+
+  audio:
+    image: audio_node_app
+    ports:
+      - 3003:3003
+    depends_on:
+      - database       
+    networks:
+      - mynetwork   
+
+  user:
+    image: user_node_app
+    ports:
+      - 3001:3001
+    depends_on:
+      - database  
+    networks:
+      - mynetwork 
+
+
+  token:
+    image: token_node_app
+    ports:
+      - 3004:3004
+    networks:
+      - mynetwork 
+
+  gateway:
+    image: gateway_node_app
+    ports:
+      - 3000:3000
+    networks:
+      - mynetwork       
+
+  database:
+    image: mysql
+
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=root
+    networks:
+      - mynetwork
+    
+
+
+networks:
+  mynetwork:

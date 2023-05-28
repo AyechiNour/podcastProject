@@ -2,48 +2,48 @@
   "development": {
     "dbUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "userdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "metauserdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   },
   "test": {
     "dbUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "userdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "metauserdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   },
   "production": {
     "dbUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "userdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     },
     "dbMetaUser": {
       "username": "root",
-      "password": null,
+      "password": "password",
       "database": "metauserdb",
-      "host": "127.0.0.1",
+      "host": "172.17.0.2",
       "dialect": "mysql"
     }
   }
