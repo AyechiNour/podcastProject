@@ -17,7 +17,7 @@ exports.addArticle = async (data) => {
         const content = data.content
         const token = data.token
 
-        //Validate all the data coming through.
+        //Validate all the data coming through.using the express validators
 
         if (_.isEmpty(subject)) errors = [...errors, "Please fill in your subject"];
 
