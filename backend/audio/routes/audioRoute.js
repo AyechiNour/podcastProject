@@ -10,6 +10,7 @@ audioRoute.post('/getAudio', async (req, res, next) => {
         res.status(200).json(result)
 	} catch (error) {
         res.status(400).json(error);
+		//this is used to configure the rquest issued by the client 
     }
 }
 );
